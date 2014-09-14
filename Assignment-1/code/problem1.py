@@ -15,6 +15,8 @@ from time import strftime
 filename = "/Users/petervarshavsky/Documents/Git_NYU/Principles-of-informatics/Pr-informatics/Assignment-1/data/sample_data_problem_1.csv"
 filename6 = "/Users/petervarshavsky/Documents/Git_NYU/Principles-of-informatics/Pr-informatics/Assignment-1/data/sample_data_problem_6a.csv"
 
+filename7 = "/Users/petervarshavsky/Documents/Git_NYU/Principles-of-informatics/Pr-informatics/Assignment-1/data/sample_data_problem_7.csv"
+filename_borough = "/Users/petervarshavsky/Documents/Git_NYU/Principles-of-informatics/Pr-informatics/Assignment-1/data/zip_borough.csv" 
 def complaintRange(filename):
 
     time_max = strptime('00', '%y') 
@@ -140,10 +142,31 @@ def printProblem6(agencyCountZip):
     for agency in agencyCountZip:
         zips = ' '.join(agencyCountZip[agency][1])
         print agency, zips, agencyCountZip[agency][0]
-            
+        
                 
             
-        
+def problem7(filename7, filename_borough):
+    
+    zip_borough = {}
+    boroughs = [] 
+    with open(filename_borough) as f:
+        csvf = csv.reader(f) 
+        print csvf.next() # skip first line
+	for line in csvf:
+            zip_borough[line[0]] = line[1]
+            if line[1] not in boroughs:
+                boroughs.append(line[1])
+    print boroughs
+    print zip_borough
+
+    borough_counts = {borough: 0 for borough in boroughs}
+    with open(filename7) as f:
+        csvf = csv.reader(f)
+        print csvf.next() # skip first line
+        for line in csvf:
+            if line[7] in zip_borough.keys():
+                borough_counts[zip_borough[line[7]]] += 1
+    print borough_counts 
 
 
 #complaintRange(filename)
@@ -154,4 +177,4 @@ def printProblem6(agencyCountZip):
 #dayWeekCount(filename)
 ACZ = agencyZipCount(filename6)
 printProblem6(ACZ)
-
+problem7(filename7, filename_borough)
