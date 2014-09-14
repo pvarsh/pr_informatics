@@ -13,6 +13,7 @@ from time import strftime
 ### Problem 1
 
 filename = "/Users/petervarshavsky/Documents/Git_NYU/Principles-of-informatics/Pr-informatics/Assignment-1/data/sample_data_problem_1.csv"
+filename6 = "/Users/petervarshavsky/Documents/Git_NYU/Principles-of-informatics/Pr-informatics/Assignment-1/data/sample_data_problem_6a.csv"
 
 def complaintRange(filename):
 
@@ -111,11 +112,12 @@ def agencyZipCount(filename):
     #{agency: {zip: count}} 3 7
     agencyDict = {}
 
+    # read file and build a dictionary of dictionaries of the form
+    # {agency: {zip: count}}
     with open(filename) as f:
         csvf = csv.reader(f)
         csvf.next() #skipping header
         for line in csvf:
-            #print line[3] + ' ' + line[7]
             if line[3] in agencyDict.keys():
                 if line[7] in agencyDict[line[3]].keys():
                     agencyDict[line[3]][line[7]] += 1
@@ -124,17 +126,23 @@ def agencyZipCount(filename):
             else:
                 agencyDict[line[3]] = {line[7]: 1}
 
+    # change the dictionary to form:
+    # {agency: (maxcount, [zips])}
     agencyCountZip = {}
     for agency in agencyDict:
-        agencyCountZip[agency] = {}
-        for k, v in agencyDict[agency].iteritems():
-            agencyCountZip[agency][v] = agencyCountZip[agency].get(v, [])
-            agencyCountZip[agency][v].append(k)
+        templist = [(count, zip) for zip, count in agencyDict[agency].iteritems()]
+        m = max(templist, key = lambda t: t[0])[0]
+        agencyCountZip[agency] = (m, [item[1][1] for item in enumerate(templist) if item[1][0] == m])
 
+    return agencyCountZip
+
+def printProblem6(agencyCountZip):
     for agency in agencyCountZip:
-        print agency, agencyCountZip[agency]
+        zips = ' '.join(agencyCountZip[agency][1])
+        print agency, zips, agencyCountZip[agency][0]
             
-    #print agencyDict
+                
+            
         
 
 
@@ -144,5 +152,6 @@ def agencyZipCount(filename):
 #problem3(filename)
 #problem4(filename, 2)
 #dayWeekCount(filename)
-agencyZipCount(filename)
+ACZ = agencyZipCount(filename6)
+printProblem6(ACZ)
 
