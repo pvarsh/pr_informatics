@@ -151,23 +151,27 @@ def problem7(filename7, filename_borough):
     boroughs = [] 
     with open(filename_borough) as f:
         csvf = csv.reader(f) 
-        print csvf.next() # skip first line
+        csvf.next() # skip first line
 	for line in csvf:
             zip_borough[line[0]] = line[1]
             if line[1] not in boroughs:
                 boroughs.append(line[1])
-    print boroughs
-    print zip_borough
+    #print boroughs
+    #print zip_borough
 
     borough_counts = {borough: 0 for borough in boroughs}
     with open(filename7) as f:
         csvf = csv.reader(f)
-        print csvf.next() # skip first line
+        csvf.next() # skip first line
         for line in csvf:
             if line[7] in zip_borough.keys():
                 borough_counts[zip_borough[line[7]]] += 1
-    print borough_counts 
+    borough_counts = sorted([(borough, count) for borough, count in borough_counts.iteritems()], key = lambda t: t[1], reverse = True)
+    return borough_counts 
 
+def print78(borough_counts):
+    for pair in borough_counts:
+        print pair[0].title(), "with", pair[1], "complaints"
 
 #complaintRange(filename)
 #complaintTypes(filename)
@@ -175,6 +179,7 @@ def problem7(filename7, filename_borough):
 #problem3(filename)
 #problem4(filename, 2)
 #dayWeekCount(filename)
-ACZ = agencyZipCount(filename6)
-printProblem6(ACZ)
-problem7(filename7, filename_borough)
+#ACZ = agencyZipCount(filename6)
+#printProblem6(ACZ)
+counts = problem7(filename7, filename_borough)
+print78(counts)
