@@ -83,11 +83,39 @@ def problem4(filename, n):
     print "\nPROBLEM 4:"
     printComplaintCounts(complaintTypesSorted(filename)[0:n])
         
+def dayWeekCount(filename):
+
+    weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+    # for sorting by day of week
+    weekdaysDict = {x:y for x, y in zip(weekdays, range(7))}
+    
+    dayDict = {x: 0 for x in weekdays}
+    with open(filename) as f:
+        csvf = csv.reader(f)
+        csvf.next()
+        for line in csvf:
+            lineTime = strptime(line[1], '%m/%d/%Y %I:%M:%S %p')
+            dayDict[strftime('%A', lineTime)] += 1
+
+    dayCounts = [(x, dayDict[x]) for x in dayDict]
+    dayCounts = sorted(dayCounts, key = lambda t: weekdaysDict[t[0]])
+
+    # output
+    print "\nPROBLEM 5:"
+    for item in dayCounts:
+        print '%s == %d' %(item[0], item[1])
+
+    
+        
+        
+
 
 #complaintRange(filename)
-complaintTypes(filename)
-complaintTypesSorted(filename)
-problem3(filename)
-problem4(filename, 2)
+#complaintTypes(filename)
+#complaintTypesSorted(filename)
+#problem3(filename)
+#problem4(filename, 2)
+dayWeekCount(filename)
 
 
