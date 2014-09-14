@@ -106,8 +106,35 @@ def dayWeekCount(filename):
     for item in dayCounts:
         print '%s == %d' %(item[0], item[1])
 
-    
-        
+
+def agencyZipCount(filename):
+    #{agency: {zip: count}} 3 7
+    agencyDict = {}
+
+    with open(filename) as f:
+        csvf = csv.reader(f)
+        csvf.next() #skipping header
+        for line in csvf:
+            #print line[3] + ' ' + line[7]
+            if line[3] in agencyDict.keys():
+                if line[7] in agencyDict[line[3]].keys():
+                    agencyDict[line[3]][line[7]] += 1
+                else:
+                    agencyDict[line[3]][line[7]] = 1
+            else:
+                agencyDict[line[3]] = {line[7]: 1}
+
+    agencyCountZip = {}
+    for agency in agencyDict:
+        agencyCountZip[agency] = {}
+        for k, v in agencyDict[agency].iteritems():
+            agencyCountZip[agency][v] = agencyCountZip[agency].get(v, [])
+            agencyCountZip[agency][v].append(k)
+
+    for agency in agencyCountZip:
+        print agency, agencyCountZip[agency]
+            
+    #print agencyDict
         
 
 
@@ -116,6 +143,6 @@ def dayWeekCount(filename):
 #complaintTypesSorted(filename)
 #problem3(filename)
 #problem4(filename, 2)
-dayWeekCount(filename)
-
+#dayWeekCount(filename)
+agencyZipCount(filename)
 
