@@ -28,7 +28,8 @@ def readFileProblem1(filename):
     time_max = strptime('00', '%y') 
     time_min = strptime('9999', '%Y')
     complaintCounter = 0
-    
+
+    # reading file and computing max, min, counter
     with open(filename) as f:
         csvf = csv.reader(f, delimiter=',')
         csvf.next() # skip header
@@ -43,8 +44,6 @@ def readFileProblem1(filename):
     
 def print_problem1(complaintCounter, time_min, time_max):
     print str(complaintCounter) + " complaints between " + strftime('%m/%d/%Y %H:%M:%S', time_min) + " and " + strftime('%m/%d/%Y %H:%M:%S', time_max)
-    
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])
