@@ -142,6 +142,7 @@ def agencyZipCount(filename):
     return agencyCountZip
 
 def printProblem6(agencyCountZip):
+    # note: need to sort agencies alphabetically
     for agency in agencyCountZip:
         zips = ' '.join(agencyCountZip[agency][1])
         print agency, zips, agencyCountZip[agency][0]
@@ -155,7 +156,7 @@ def problem7(filename7, filename_borough):
     with open(filename_borough) as f:
         csvf = csv.reader(f) 
         csvf.next() # skip first line
-	for line in csvf:
+        for line in csvf:
             zip_borough[line[0]] = line[1]
             if line[1] not in boroughs:
                 boroughs.append(line[1])
@@ -182,7 +183,7 @@ def print78(borough_counts):
 #problem3(filename)
 #problem4(filename, 2)
 #dayWeekCount(filename)
-#ACZ = agencyZipCount(filename6)
-#printProblem6(ACZ)
-counts = problem7(filename8, filename_borough)
-print78(counts)
+ACZ = agencyZipCount(filename6)
+printProblem6(ACZ)
+#counts = problem7(filename8, filename_borough)
+#print78(counts)
