@@ -2,7 +2,7 @@
 #### Principles of Urban Informatics
 #### Peter Varshavsky
 #### Assignment 1
-#### Problem 7
+#### Problem 8
 ########################################
 
 import csv
@@ -22,7 +22,6 @@ def problem7(filename7, filename_borough):
             zip_borough[line[0]] = line[1]
             if line[1] not in boroughs:
                 boroughs.append(line[1])
-
 
     borough_counts = {borough: 0 for borough in boroughs}
     with open(filename7) as f:
