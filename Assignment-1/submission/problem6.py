@@ -46,12 +46,11 @@ def printProblem6(agencyCountZip):
         zips = ' '.join(agency[2])
         print agency[0], zips, agency[1]
 
-
 def main(argv):
     if len(argv) == 1:
         printProblem6(agencyZipCount(argv[0]))
     else:
-        print "Invalid number of arguments. Call format: 'python problem1.py data_file.csv n'"
+        print "Invalid number of arguments. Call format: 'python problem1.py data_file.csv'"
 
 if __name__ == "__main__":
     main(sys.argv[1:])

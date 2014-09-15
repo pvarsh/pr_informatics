@@ -38,7 +38,7 @@ def main(argv):
     if len(argv) == 1:
         dayWeekCount(argv[0])
     else:
-        print "Invalid number of arguments. Call format: 'python problem1.py data_file.csv n'"
+        print "Invalid number of arguments. Call format: 'python problem1.py data_file.csv'"
 
 if __name__ == "__main__":
     main(sys.argv[1:])
