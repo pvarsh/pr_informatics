@@ -52,7 +52,7 @@ def readCommandLine(lineString):
     if lineString[-1] == '\n':
         lineString = lineString[:-1]
     #command = lineString.split('|')
-    command = csv.reader([lineString], delimiter = '|')
+    command = csv.reader([lineString], delimiter = '|', quotechar = '"').next()
     values = command[1:]
 
     # converting id, number of open positions and salary fields to numeric
@@ -142,6 +142,7 @@ def getCol(db, name):
     return qf_index
 
 def delete_all(db, values):
+    print "delete_all: query_field_name = ", values[0]
     try:
         qf_index = getCol(db, values[0])
     except ValueError as detail:
