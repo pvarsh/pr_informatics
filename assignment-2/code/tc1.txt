@@ -1,0 +1,6 @@
+clear
+insert|00|r0c1|33|r0c3|r0c4|33|33|r0c7|r0c8|r0c9|r0c10|r0c11|r0c12|r0c13|r0c14
+insert|11|r1c1|33|r1c3|r1c4|33|33|r1c7|r1c8|r1c9|r1c10|r1c11|r1c12|r1c13|r1c14
+insert|22|r2c1|33|r2c3|r2c4|33|33|r2c7|r2c8|r2c9|r2c10|r2c11|r2c12|r2c13|r2c14
+insert|33|r3c1|33|r3c3|r3c4|33|33|r3c7|r3c8|r3c9|r3c10|r3c11|r3c12|r3c13|r3c14
+insert|44|r4c1|33|r4c3|r4c4|33|33|r4c7|r4c8|r4c9|r4c10|r4c11|r4c12|r4c13|r4c14
