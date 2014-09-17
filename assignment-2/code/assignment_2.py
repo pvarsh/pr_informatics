@@ -26,6 +26,9 @@ def readCommandFile(db, file):
                 insert(db, values)
             if command == 'dump':
                 print 'output file name?'
+            if command == 'update_all':
+                print "\n\n"
+                update_all(db, values)
                 
             
 
@@ -72,6 +75,36 @@ def readCommands(filename):
         for line in f:
             print line[0:20]
 
+def update_all(db, values):
+    # make list of column names
+    # update_all|
+    #               query_field_name
+    #               query_field_value
+    #               update_field_name
+    #               update_field_value
+
+    qf_index = fieldNameIndex(db, values[0])
+    uf_index = fieldNameIndex(db, values[2])
+    
+    update_rows = [i for i, x in enumerate(db[qf_index]) if x == values[1]]
+    
+    print "Update where column ", qf_index, " has value ", values[1]
+    print update_rows
+
+    for row in update_rows:
+        db[uf_index][row] = values[3]
+    
+def fieldNameIndex(db, name):
+    colNames = [col[0] for col in db]
+    try:
+        qf_index = colNames.index(name)
+    except ValueError:
+        raise ValueError("Query field name does not exist in database")
+    return qf_index
+    
+    
+    
+
 def test(csvFile, file):
     db = readHeader(csvFile)
     clear(db)
@@ -79,6 +112,8 @@ def test(csvFile, file):
 
     readCommandFile(db, file)
     prettyPrint(db)
+
+    return db
 
 def prettyPrint(db, maxrows = 200, nchar = 10):
     # prints the database in fixed width column format
@@ -98,8 +133,10 @@ def prettyPrint(db, maxrows = 200, nchar = 10):
 #[[id], [numPos], [busTitle], [civServTitle]]
 
 path = "/Users/petervarshavsky/Documents/Git_NYU/Principles-of-informatics/Pr-informatics/assignment-2/data/"
-file1 = path + "sample_data_problem_1.txt"
+file1 = path + "sample_data_problem_2.txt"
 csvFile = path + "NYC_Jobs_sample.csv"
 #readCommands(file1)
 #print readHeader(csvFile)
-test(csvFile, file1)
+db = test(csvFile, file1)
+
+
