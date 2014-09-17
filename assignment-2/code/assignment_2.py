@@ -53,8 +53,12 @@ def readCommandLine(lineString):
     return command, values
 
 def insert(db, valueList):
-    for i, value in enumerate(valueList):
-        db[i].append(value)
+    # insert values into database if job_id is not already in the database
+    if valueList[0] not in db[0]:
+        for i, value in enumerate(valueList):
+            db[i].append(value)
+    else:
+        print "Duplicate id. Not included"
 
 def dump(db):
     pass
