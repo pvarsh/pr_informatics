@@ -24,13 +24,13 @@ def readCommandFile(db, file):
                 clear(db)
             if command == 'insert':
                 insert(db, values)
+            if command == 'dump':
+                print 'output file name?'
                 
             
 
 def clear(db):
     for i, column in enumerate(db):
-        print column
-        print column[0]
         db[i] = [column[0]]
 
 def readCommandLine(lineString):
@@ -45,15 +45,14 @@ def readCommandLine(lineString):
         whichFloat = [5, 6] #these indeces to be converted to float
 
         for n in whichInt:
-            values[n] = int(n)
+            values[n] = int(values[n])
         for n in whichFloat:
-            values[n] = float(n)
-    
+            values[n] = float(values[n])
+
     command = command[0]
     return command, values
 
 def insert(db, valueList):
-    print db
     for i, value in enumerate(valueList):
         db[i].append(value)
 
@@ -71,14 +70,26 @@ def readCommands(filename):
 
 def test(csvFile, file):
     db = readHeader(csvFile)
-    print "\nNumber of columns: ", len(db)
-    print db
     clear(db)
-    print db
  
 
-    #readCommandFile(db, file)
-    
+    readCommandFile(db, file)
+    prettyPrint(db)
+
+def prettyPrint(db, maxrows = 200, nchar = 10):
+    # prints the database in fixed width column format
+    nrows = min(len(db[0]), maxrows)
+
+    outstring = ''
+    for row in xrange(nrows):
+        for column in db:
+            outstring = outstring + ' | ' + str(column[row])[:nchar].ljust(nchar)
+        outstring = outstring + '\n'
+    print outstring
+        
+
+            
+        
     
 #[[id], [numPos], [busTitle], [civServTitle]]
 
