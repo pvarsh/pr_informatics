@@ -142,15 +142,20 @@ def getCol(db, name):
     return qf_index
 
 def delete_all(db, values):
+    print "Before deletion: "
+    prettyPrint(db)
     print "delete_all: query_field_name = ", values[0]
     try:
         qf_index = getCol(db, values[0])
+        delete_rows = getRows(db, qf_index, int(values[1]))
+        print "QF_Name: ", [values[0]], " QF_Value: ", [values[1]]
+        print delete_rows
+        delete_rows.sort(reverse = True)
+        print "Rows to be deleted: ", delete_rows
+        print "After deletion: "
+        prettyPrint(db)
     except ValueError as detail:
         print "Warning: ", detail
-    delete_rows = getRows(db, qf_index, values[1])
-
-    delete_rows.sort(reverse = True)
-    print delete_rows
 
     
     

@@ -1,3 +1,3 @@
-1|CONSTRUCTION|1|College|COLLEGE|14|17|Hourly|30|ITS|string_1|string_2|string_3|string_4|07/14/2014 00:00:00
-3|Cesar|3|Electricity|ELECTRICITY|50|5|Monthly|5|SSWE|ng_1|ng_2|ng_3|ng_4|06/24/2015 10:50:00
-5|Fabio|5|5College|5MYCOLLEGE|3|5017|xxxxxxxx|2|xxxxxx|asdfasdf|qwer|ddg|dg|01/05/2013 00:50:00
+1|DEPARTMENT OF BUILDINGS|1|Assistant|AGENCY ATTORNEY|66970|92000|Annual|N.Y.|General Counsel's Office|Responsibilities|Admission| | |08/27/2014 00:00:00
+3|DESIGN|1|College Aide|COLLEGE AIDE|14|17|Hourly|NY|ITS|COLLEGE|Level I|Preference| |07/14/2014 00:00:00
+5|LAW DEPARTMENT|1|Assessor|ASSESSOR|40623|100000|Annual|Queens|Tax|supervision|baccalaureate|elibigible| |11/26/2013 00:00:00
