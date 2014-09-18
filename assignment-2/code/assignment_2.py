@@ -56,14 +56,14 @@ def readCommandLine(lineString):
     values = command[1:]
 
     # converting id, number of open positions and salary fields to numeric
-    if len(values) == 15:
-        whichInt = [0, 2] #these indeces to be converted to integer
-        whichFloat = [5, 6] #these indeces to be converted to float
+    #if len(values) == 15:
+    #    whichInt = [0, 2] #these indeces to be converted to integer
+    #    whichFloat = [5, 6] #these indeces to be converted to float
 
-        for n in whichInt:
-            values[n] = int(values[n])
-        for n in whichFloat:
-            values[n] = float(values[n])
+    #    for n in whichInt:
+    #        values[n] = int(values[n])
+    #    for n in whichFloat:
+    #        values[n] = float(values[n])
 
     command = command[0]
     return command, values
@@ -107,15 +107,15 @@ def update_all(db, values):
     uf_index = getCol(db, values[2]) # update field index
 
     # converting strings to numbers for id, salary range, # positions open
-    if qf_index in [0, 2]:
-        print "AAA qf_index: ", qf_index
-        values[1] = int(values[1])
-    if qf_index in [5, 6]:
-        values[1] = float(values[1])
-    if uf_index in [0, 2]:
-        values[3] = int(values[3])
-    if uf_index in [5, 6]:
-        values[3] = float(values[3])
+    #if qf_index in [0, 2]:
+    #    print "AAA qf_index: ", qf_index
+    #    values[1] = int(values[1])
+    #if qf_index in [5, 6]:
+    #    values[1] = float(values[1])
+    #if uf_index in [0, 2]:
+    #    values[3] = int(values[3])
+    #if uf_index in [5, 6]:
+    #    values[3] = float(values[3])
 
 ##    update_rows = [i for i, x in enumerate(db[qf_index]) if x == values[1]]
 ##    if len(update_rows) == 0:
