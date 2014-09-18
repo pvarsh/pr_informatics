@@ -147,7 +147,7 @@ def delete_all(db, values):
     print "delete_all: query_field_name = ", values[0]
     try:
         qf_index = getCol(db, values[0])
-        delete_rows = getRows(db, qf_index, int(values[1]))
+        delete_rows = getRows(db, qf_index, values[1])
         print "QF_Name: ", [values[0]], " QF_Value: ", [values[1]]
         print delete_rows
         delete_rows.sort(reverse = True)
@@ -207,7 +207,7 @@ def makeTestCase1(fileOut, nrows = 5):
 path = "/Users/petervarshavsky/Documents/Git_NYU/Principles-of-informatics/Pr-informatics/assignment-2/data/"
 file1 = path + "sample_data_problem_1.txt"
 file2 = path + "sample_data_problem_2.txt"
-file3 = path + "sample_data_problem_3.txt"
+file3 = path + "sample_data_problem_3a.txt"
 tc1 = path + "test_case_1.txt"
 csvFile = path + "NYC_Jobs_sample.csv"
 
