@@ -38,6 +38,10 @@ def readCommandFile(db, file):
                     print "Insert warning: ", detail
             if command == 'delete_all':
                 delete_all(db, values)
+            if command == 'view':
+                view(db, values)
+            if command == 'find':
+                find(db, values)
                 
             
 def clear(db):
@@ -56,14 +60,14 @@ def readCommandLine(lineString):
     values = command[1:]
 
     # converting id, number of open positions and salary fields to numeric
-    #if len(values) == 15:
-    #    whichInt = [0, 2] #these indeces to be converted to integer
-    #    whichFloat = [5, 6] #these indeces to be converted to float
-
-    #    for n in whichInt:
-    #        values[n] = int(values[n])
-    #    for n in whichFloat:
-    #        values[n] = float(values[n])
+##    if len(values) == 15:
+##        whichInt = [0, 2] #these indeces to be converted to integer
+##        whichFloat = [5, 6] #these indeces to be converted to float
+##
+##        for n in whichInt:
+##            values[n] = int(values[n])
+##        for n in whichFloat:
+##            values[n] = float(values[n])
 
     command = command[0]
     return command, values
@@ -74,8 +78,8 @@ def insert(db, valueList):
     if len(valueList) != 15:
         print len(valueList)
         raise Exception("Invalid number of parameters. Must have 15")
-    print "Length of value list: ", len(valueList)
-    print "Job ID: ", valueList[0]
+    #print "Length of value list: ", len(valueList)
+    #print "Job ID: ", valueList[0]
     if valueList[0] not in db[0]:
         for i, value in enumerate(valueList):
             db[i].append(value)
@@ -107,15 +111,15 @@ def update_all(db, values):
     uf_index = getCol(db, values[2]) # update field index
 
     # converting strings to numbers for id, salary range, # positions open
-    #if qf_index in [0, 2]:
-    #    print "AAA qf_index: ", qf_index
-    #    values[1] = int(values[1])
-    #if qf_index in [5, 6]:
-    #    values[1] = float(values[1])
-    #if uf_index in [0, 2]:
-    #    values[3] = int(values[3])
-    #if uf_index in [5, 6]:
-    #    values[3] = float(values[3])
+    if qf_index in [0, 2]:
+        print "AAA qf_index: ", qf_index
+        values[1] = int(values[1])
+    if qf_index in [5, 6]:
+        values[1] = float(values[1])
+    if uf_index in [0, 2]:
+        values[3] = int(values[3])
+    if uf_index in [5, 6]:
+        values[3] = float(values[3])
 
 ##    update_rows = [i for i, x in enumerate(db[qf_index]) if x == values[1]]
 ##    if len(update_rows) == 0:
@@ -142,22 +146,53 @@ def getCol(db, name):
     return qf_index
 
 def delete_all(db, values):
-    print "Before deletion: "
-    prettyPrint(db)
     print "delete_all: query_field_name = ", values[0]
     try:
         qf_index = getCol(db, values[0])
-        delete_rows = getRows(db, qf_index, values[1])
-        print "QF_Name: ", [values[0]], " QF_Value: ", [values[1]]
-        print delete_rows
-        delete_rows.sort(reverse = True)
-        print "Rows to be deleted: ", delete_rows
-        print "After deletion: "
-        prettyPrint(db)
     except ValueError as detail:
         print "Warning: ", detail
+    delete_rows = getRows(db, qf_index, values[1])
+
+    delete_rows.sort(reverse = True)
+    print "####################\nDB before deleting: "
+    prettyPrint(db)
+    
+    print delete_rows
+    for col in db:
+        for row in delete_rows:
+            del col[row]
+        
+    print "####################\nDB after deleting: "
+    prettyPrint(db)
 
     
+def view(db, values):
+    colNames = [col[0] for col in db]
+    colDict = {colName: i for i, colName in enumerate(colNames)}
+    colsToView = [db[colDict[value]] for value in values]
+    print "Columns to view: ", values
+    prettyPrint(colsToView)        
+
+def find(db, values):
+    print "Find. Full db: "
+    prettyPrint(db)
+    print "find: query_field_name = ", values[0]
+    print "find: values: ", values
+    try:
+        qf_index = getCol(db, values[0])
+    except ValueError as detail:
+        print "Warning: ", detail
+    found_rows = getRows(db, qf_index, values[1])
+    print "found rows: ", found_rows
+    found_rows.append(0)
+    found_rows.sort()
+    print "found rows: ", found_rows
+
+    found_db = [[col[row] for row in found_rows] for col in db]
+    
+    print "Find. Found subset: "
+    prettyPrint(found_db)
+
     
 
 def test(csvFile, file):
@@ -165,7 +200,7 @@ def test(csvFile, file):
     clear(db)
  
     readCommandFile(db, file)
-    prettyPrint(db)
+    #prettyPrint(db)
 
     return db
 
@@ -207,7 +242,11 @@ def makeTestCase1(fileOut, nrows = 5):
 path = "/Users/petervarshavsky/Documents/Git_NYU/Principles-of-informatics/Pr-informatics/assignment-2/data/"
 file1 = path + "sample_data_problem_1.txt"
 file2 = path + "sample_data_problem_2.txt"
-file3 = path + "sample_data_problem_3a.txt"
+file3 = path + "sample_data_problem_3.txt"
+file4 = path + "sample_data_problem_4.txt"
+file5 = path + "sample_data_problem_5.txt"
+file6 = path + "sample_data_problem_6.txt"
+
 tc1 = path + "test_case_1.txt"
 csvFile = path + "NYC_Jobs_sample.csv"
 
@@ -215,6 +254,5 @@ csvFile = path + "NYC_Jobs_sample.csv"
 
 #readCommands(file1)
 #print readHeader(csvFile)
-db = test(csvFile, file3)
-
+db = test(csvFile, file6)
 
