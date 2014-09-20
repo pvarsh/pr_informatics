@@ -5,6 +5,7 @@
 #################################
 
 import csv
+import sys
 
 def readHeader(filename):
     # initializes a database as list of lists
@@ -30,7 +31,7 @@ def readCommandFile(db, file):
                 except Exception as detail:
                     print "Exception: ", detail
             if command == 'dump':
-                print 'output file name?'
+                dump(db)
             if command == 'update_all':
                 try:
                     update_all(db, values)
@@ -42,7 +43,7 @@ def readCommandFile(db, file):
                 view(db, values)
             if command == 'find':
                 find(db, values)
-                
+    
             
 def clear(db):
     # clears the database
@@ -83,8 +84,8 @@ def insert(db, valueList):
     if valueList[0] not in db[0]:
         for i, value in enumerate(valueList):
             db[i].append(value)
-    else:
-        print "Duplicate id. Not included"
+##    else:
+##        print "Duplicate id. Not included"
 
 def dump(db):
     pass
@@ -111,23 +112,24 @@ def update_all(db, values):
     uf_index = getCol(db, values[2]) # update field index
 
     # converting strings to numbers for id, salary range, # positions open
-    if qf_index in [0, 2]:
-        print "AAA qf_index: ", qf_index
-        values[1] = int(values[1])
-    if qf_index in [5, 6]:
-        values[1] = float(values[1])
-    if uf_index in [0, 2]:
-        values[3] = int(values[3])
-    if uf_index in [5, 6]:
-        values[3] = float(values[3])
+##    if qf_index in [0, 2]:
+##        print "AAA qf_index: ", qf_index
+##        values[1] = int(values[1])
+##    if qf_index in [5, 6]:
+##        values[1] = float(values[1])
+##    if uf_index in [0, 2]:
+##        values[3] = int(values[3])
+##    if uf_index in [5, 6]:
+##        values[3] = float(values[3])
 
 ##    update_rows = [i for i, x in enumerate(db[qf_index]) if x == values[1]]
 ##    if len(update_rows) == 0:
 ##        raise ValueError("Query field value does not exist in the database")
     update_rows = getRows(db, qf_index, values[1])
+    print len(update_rows)
     
-    print "Update where column ", qf_index, " has value ", values[1]
-    print "Rows to be updated: ", update_rows
+##    print "Update where column ", qf_index, " has value ", values[1]
+##    print "Rows to be updated: ", update_rows
 
     for row in update_rows:
         db[uf_index][row] = values[3]
@@ -204,6 +206,23 @@ def test(csvFile, file):
 
     return db
 
+def dump(db):
+
+    printIndex = sorted(enumerate(db[0][1:], start = 1), key = lambda t: t[1])
+    printIndex = [i for i,j in printIndex]
+    #print printIndex
+    outstring = ''
+    for rowCount, ind in enumerate(printIndex):
+        for colCount, col in enumerate(db):
+            if colCount > 0:
+                outstring = outstring + '|' + col[ind]
+            else:
+                outstring = outstring + col[ind]
+        if rowCount < len(db[0]) - 2:
+            outstring = outstring + '\n'
+    print outstring
+            
+    
 def prettyPrint(db, maxrows = 200, nchar = 10):
     # prints the database in fixed width column format
     nrows = min(len(db[0]), maxrows)
@@ -214,7 +233,7 @@ def prettyPrint(db, maxrows = 200, nchar = 10):
             outstring = outstring + ' | ' + str(column[row])[:nchar].ljust(nchar)
         outstring = outstring + '\n'
     print outstring
-        
+    
 def makeTestCase1(fileOut, nrows = 5):
 
     strOut = 'clear\n'
@@ -232,7 +251,7 @@ def makeTestCase1(fileOut, nrows = 5):
     with open(fileOut, 'w') as f:
         f.write(strOut)
     
-            
+
         
     
 #[[id], [numPos], [busTitle], [civServTitle]]
@@ -254,5 +273,10 @@ csvFile = path + "NYC_Jobs_sample.csv"
 
 #readCommands(file1)
 #print readHeader(csvFile)
-db = test(csvFile, file6)
+#db = test(csvFile, file6)
+
+if __name__ == '__main__':
+    db = readHeader(csvFile)
+    file = path + sys.argv[1]
+    readCommandFile(db, file)
 
