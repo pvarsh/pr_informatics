@@ -1,0 +1,5 @@
+N.Y.|1|Assistant|DEPARTMENT OF BUILDINGS|Annual
+NY|2|SCIENTIST|HRA|Annual
+NY|3|College Aide|DESIGN|Hourly
+Brooklyn|4|PROCUREMENT ANALYST|HRA|Annual
+Queens|5|Assessor|LAW DEPARTMENT|Annual

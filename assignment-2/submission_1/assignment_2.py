@@ -6,6 +6,7 @@
 
 import csv
 import sys
+import os.path
 
 def readHeader(filename):
     # initializes a database as list of lists
@@ -88,15 +89,15 @@ def insert(db, valueList):
 ##        print "Duplicate id. Not included"
 
     
-def createCommandsDict():
-    # creates a dictionary of commands
-    pass
+##def createCommandsDict():
+##    # creates a dictionary of commands
+##    pass
 
-def readCommands(filename):
-    # currently not used
-    with open(filename, 'r') as f:
-        for line in f:
-            print line[0:20]
+##def readCommands(filename):
+##    # currently not used
+##    with open(filename, 'r') as f:
+##        for line in f:
+##            print line[0:20]
 
 def update_all(db, values):
     # make list of column names
@@ -193,8 +194,8 @@ def find(db, values):
     #print "found rows: ", found_rows
 
     found_db = [[col[row] for row in found_rows] for col in db]
-    print "gragragra"
-    dump(found_db)
+    if len(found_db[0]) > 1:
+        dump(found_db)
     
     #print "Find. Found subset: "
     #prettyPrint(found_db)
@@ -229,7 +230,43 @@ def dump(db, printFirstColumn = True):
         if rowCount < len(db[0]) - 2:
             outstring = outstring + '\n'
     print outstring
+
+def save_db(db, fileout = "db.txt"):
+##    strOut = ''
+##    for row in xrange(len(db[0])):
+##        for col in db:
+##            strOut += col[row]
+##        strOut += '\n'
+##        
+##    with open(fileout, 'w') as f:
+##        f.write(strOut)
+
+    with open(fileout, 'w') as f:
+        writer = csv.writer(f, delimiter = '|', quotechar = '"')
+        rows = [[col[row] for col in db] for row in xrange(len(db[0]))]
+        writer.writerows(rows)
+        
+def load_db(filein = "db.txt"):
+    if os.path.isfile(filein):
+        db = [[] for i in range(15)]
+        with open(filein, 'r') as f:
+            reader = csv.reader(f, delimiter = '|', quotechar = '"')
+            for row in reader:
+                for i, value in enumerate(row):
+                    db[i].append(value)
+    else:
+        names = ['Job ID', 'Agency',
+                 '# Of Positions', 'Business Title',
+                 'Civil Service Title', 'Salary Range From',
+                 'Salary Range To', 'Salary Frequency',
+                 'Work Location', 'Division/Work Unit',
+                 'Job Description', 'Minimum Qual Requirements',
+                 'Preferred Skills', 'Additional Information',
+                 'Posting Date']
+        db = [[colHead] for colHead in names]
+    return db
             
+                         
     
 def prettyPrint(db, maxrows = 200, nchar = 10):
     # prints the database in fixed width column format
@@ -259,7 +296,6 @@ def makeTestCase1(fileOut, nrows = 5):
     with open(fileOut, 'w') as f:
         f.write(strOut)
     
-
         
     
 #[[id], [numPos], [busTitle], [civServTitle]]
@@ -284,7 +320,11 @@ csvFile = path + "NYC_Jobs_sample.csv"
 #db = test(csvFile, file6)
 
 if __name__ == '__main__':
-    db = readHeader(csvFile)
+    db = load_db()        
+    #prettyPrint(db)
+    #db = readHeader(csvFile)
     file = path + sys.argv[1]
     readCommandFile(db, file)
+    #prettyPrint(db)
+    save_db(db)
 

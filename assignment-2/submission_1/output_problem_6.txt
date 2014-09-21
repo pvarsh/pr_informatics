@@ -1,0 +1,3 @@
+4|HRA|1|PROCUREMENT ANALYST|MANAGER|49492|90000|Annual|Brooklyn|Procurement|Financial|baccalaureate| |P468|08/04/2014 00:00:00
+2|HRA|1|SCIENTIST|SCIENTIST|71220|100000|Annual|NY|Off|The Office|Assignment|Candidates must have| |07/03/2014 00:00:00
+5|LAW DEPARTMENT|1|Assessor|ASSESSOR|40623|100000|Annual|Queens|Tax|supervision|baccalaureate|elibigible| |11/26/2013 00:00:00
