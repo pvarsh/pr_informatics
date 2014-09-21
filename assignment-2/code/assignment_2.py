@@ -87,8 +87,6 @@ def insert(db, valueList):
 ##    else:
 ##        print "Duplicate id. Not included"
 
-def dump(db):
-    pass
     
 def createCommandsDict():
     # creates a dictionary of commands
@@ -148,7 +146,7 @@ def getCol(db, name):
     return qf_index
 
 def delete_all(db, values):
-    print "delete_all: query_field_name = ", values[0]
+    #print "delete_all: query_field_name = ", values[0]
     try:
         qf_index = getCol(db, values[0])
     except ValueError as detail:
@@ -156,44 +154,50 @@ def delete_all(db, values):
     delete_rows = getRows(db, qf_index, values[1])
 
     delete_rows.sort(reverse = True)
-    print "####################\nDB before deleting: "
-    prettyPrint(db)
+    #print "####################\nDB before deleting: "
+    #prettyPrint(db)
     
-    print delete_rows
+    #print delete_rows
     for col in db:
         for row in delete_rows:
             del col[row]
         
-    print "####################\nDB after deleting: "
-    prettyPrint(db)
+    #print "####################\nDB after deleting: "
+    #prettyPrint(db)
 
     
 def view(db, values):
     colNames = [col[0] for col in db]
     colDict = {colName: i for i, colName in enumerate(colNames)}
-    colsToView = [db[colDict[value]] for value in values]
-    print "Columns to view: ", values
-    prettyPrint(colsToView)        
+    colsToView = [db[colDict[value]] for value in ["Job ID"] + values]
+
+    printOrder = sorted(enumerate(colsToView[1:],1), key = lambda t: t[1])
+
+    dump(colsToView, printFirstColumn = False)
+    #print "Columns to view: ", values
+    #prettyPrint(colsToView)        
 
 def find(db, values):
-    print "Find. Full db: "
-    prettyPrint(db)
-    print "find: query_field_name = ", values[0]
-    print "find: values: ", values
+    #print "Find. Full db: "
+    #prettyPrint(db)
+    #print "find: query_field_name = ", values[0]
+    #print "find: values: ", values
     try:
         qf_index = getCol(db, values[0])
     except ValueError as detail:
         print "Warning: ", detail
     found_rows = getRows(db, qf_index, values[1])
-    print "found rows: ", found_rows
+    #print "found rows: ", found_rows
     found_rows.append(0)
     found_rows.sort()
-    print "found rows: ", found_rows
+    #print "found rows: ", found_rows
 
     found_db = [[col[row] for row in found_rows] for col in db]
+    print "gragragra"
+    dump(found_db)
     
-    print "Find. Found subset: "
-    prettyPrint(found_db)
+    #print "Find. Found subset: "
+    #prettyPrint(found_db)
 
     
 
@@ -206,10 +210,14 @@ def test(csvFile, file):
 
     return db
 
-def dump(db):
+def dump(db, printFirstColumn = True):
 
     printIndex = sorted(enumerate(db[0][1:], start = 1), key = lambda t: t[1])
     printIndex = [i for i,j in printIndex]
+
+    if printFirstColumn != True:
+        del db[0]
+        
     #print printIndex
     outstring = ''
     for rowCount, ind in enumerate(printIndex):
