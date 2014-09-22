@@ -3,14 +3,14 @@ import sys
 def initialize_db():
   fieldNames = 'Job ID,Agency,# Of Positions,Business Title,Civil Service Title,Salary Range From,Salary Range To,Salary Frequency,Work Location,Division/Work Unit,Job Description,Minimum Qual Requirements,Preferred Skills,Additional Information,Posting Date'
   fieldNames = fieldNames.split(',')
-  db = [[], []]
+  db = {'Jobs': [], 'Agencies': {}]
 
   # initialize Table 1
-  db[0] = fieldNames
-  db[0][1] = 'Agency ID'
+  db['Jobs'] = fieldNames
+  db['Jobs'][1] = ['Agency ID']
 
   # initialize Table 2
-  db[1] = ['Agency ID', 'Agency']
+  db['Agencies'] = ['Agency ID', 'Agency']
 
   return db
   
@@ -54,7 +54,7 @@ def insert(db, fieldValues):
     db['Agencies']['IDtoName'][agencyID] = agencyName
 
 # Updates all job offers that attend the field_name=old_value pair.
-def update_all(params):
+def update_all(db, params):
     query_field_name = params[0]
     query_field_value = params[1]
     update_field_name = params[2]
@@ -70,7 +70,7 @@ def update_all(params):
 
 
 # Deletes all job offers that attend the field_name=field_value pair.
-def delete_all(params):
+def delete_all(db, params):
   field_name, field_value = params
   
   # TODO Complete with your code and remove print below.

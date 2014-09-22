@@ -4,6 +4,16 @@
 # Peter Varshavsky
 #################################
 
+
+####
+# The database is implemented as a list of lists with insight lists representing
+# columns of the database.
+# [['Job ID', ###, ###, ...],['Agency', 'MTA', 'HRA', ...],...,[]]
+# When the database is cleared, the top row containing column names is not cleared
+# All manipulations are done to existing lists. No new lists are created by
+# database manipulation functions.
+####
+
 import csv
 import sys
 import os.path
@@ -47,7 +57,7 @@ def readCommandFile(db, file):
     
             
 def clear(db):
-    # clears the database
+    # clears the database in RAM
     # keeps column names
     for i, column in enumerate(db):
         db[i] = [column[0]]
@@ -247,6 +257,10 @@ def save_db(db, fileout = "db.txt"):
         writer.writerows(rows)
         
 def load_db(filein = "db.txt"):
+    # checks if database file exists in same directory as script
+    #   if yes: initializes database with values from the file
+    #   if not: initializes an empty database with column names
+    
     if os.path.isfile(filein):
         db = [[] for i in range(15)]
         with open(filein, 'r') as f:
@@ -270,6 +284,7 @@ def load_db(filein = "db.txt"):
     
 def prettyPrint(db, maxrows = 200, nchar = 10):
     # prints the database in fixed width column format
+    
     nrows = min(len(db[0]), maxrows)
 
     outstring = ''
@@ -279,39 +294,35 @@ def prettyPrint(db, maxrows = 200, nchar = 10):
         outstring = outstring + '\n'
     print outstring
     
-def makeTestCase1(fileOut, nrows = 5):
-
-    strOut = 'clear\n'
-    for row in range(nrows):
-        strOut = strOut + 'insert'
-        strOut = strOut + '|' + str(row) + str(row)
-        for col in range(1,15):
-            if col in [2, 5, 6]:
-                strOut = strOut + '|' + '33'
-            else: 
-                strOut = strOut + '|' + 'r' + str(row) + 'c' + str(col)
-        strOut= strOut + '\n'
-    print strOut
-
-    with open(fileOut, 'w') as f:
-        f.write(strOut)
-    
-        
-    
-#[[id], [numPos], [busTitle], [civServTitle]]
+##def makeTestCase1(fileOut, nrows = 5):
+##
+##    strOut = 'clear\n'
+##    for row in range(nrows):
+##        strOut = strOut + 'insert'
+##        strOut = strOut + '|' + str(row) + str(row)
+##        for col in range(1,15):
+##            if col in [2, 5, 6]:
+##                strOut = strOut + '|' + '33'
+##            else: 
+##                strOut = strOut + '|' + 'r' + str(row) + 'c' + str(col)
+##        strOut= strOut + '\n'
+##    print strOut
+##
+##    with open(fileOut, 'w') as f:
+##        f.write(strOut)
+##    
 
 
+#path = "/Users/petervarshavsky/Documents/Git_NYU/Principles-of-informatics/Pr-informatics/assignment-2/data/"
+#file1 = path + "sample_data_problem_1.txt"
+#file2 = path + "sample_data_problem_2.txt"
+#file3 = path + "sample_data_problem_3.txt"
+#file4 = path + "sample_data_problem_4.txt"
+#file5 = path + "sample_data_problem_5.txt"
+#file6 = path + "sample_data_problem_6.txt"
 
-path = "/Users/petervarshavsky/Documents/Git_NYU/Principles-of-informatics/Pr-informatics/assignment-2/data/"
-file1 = path + "sample_data_problem_1.txt"
-file2 = path + "sample_data_problem_2.txt"
-file3 = path + "sample_data_problem_3.txt"
-file4 = path + "sample_data_problem_4.txt"
-file5 = path + "sample_data_problem_5.txt"
-file6 = path + "sample_data_problem_6.txt"
-
-tc1 = path + "test_case_1.txt"
-csvFile = path + "NYC_Jobs_sample.csv"
+#tc1 = path + "test_case_1.txt"
+#csvFile = path + "NYC_Jobs_sample.csv"
 
 #makeTestCase1(tc1)
 
@@ -323,7 +334,7 @@ if __name__ == '__main__':
     db = load_db()        
     #prettyPrint(db)
     #db = readHeader(csvFile)
-    file = path + sys.argv[1]
+    file = sys.argv[1]
     readCommandFile(db, file)
     #prettyPrint(db)
     save_db(db)

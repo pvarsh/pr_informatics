@@ -4,7 +4,7 @@
 # bash test_script.sh
 
 for i in `seq 1 6`; do
-    python assignment_2.py sample_data_problem_$i.txt > output_problem_$i.txt
+    python solution.py sample_data_problem_$i.txt > output_problem_$i.txt
     echo "comparing" $i
     diff sample_output_problem_$i.txt output_problem_$i.txt  
 done
