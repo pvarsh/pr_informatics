@@ -14,12 +14,12 @@ def problem2(fileName):
     maxDate = datetime.strptime("Dec 01 1900", "%b %d %Y")
     minDate = datetime.strptime("Dec 01 5000", "%b %d %Y") 
     count = 0
-    users = set() 
+    users = {}
     with open(fileName, 'r') as f:
          reader = csv.reader(f)
          for line in reader:
              count += 1
-             users.add(line[0])
+             users[line[0]] = ''
              tweetDateTime = datetime.strptime(line[1], fmtIn)
              if tweetDateTime < minDate:
                  minDate = tweetDateTime
