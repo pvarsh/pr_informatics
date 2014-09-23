@@ -3,10 +3,10 @@ New York:
 #HighClassHoodlums, 86
 #NYC, 72
 #Job, 40
-#newyork, 30
+#NewYork, 30
 San Francisco:
 #SanFrancisco, 17
 #sanfrancisco, 14
 #Job, 13
 #Jobs, 10
-#sf, 9
+#TweetMyJobs, 9
