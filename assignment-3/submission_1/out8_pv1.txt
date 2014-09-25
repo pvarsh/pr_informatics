@@ -1,0 +1,12 @@
+New York:
+#nyc, 119
+#HighClassHoodlums, 86
+#NYC, 72
+#Job, 40
+#NewYork, 30
+San Francisco:
+#SanFrancisco, 17
+#sanfrancisco, 14
+#Job, 13
+#funnyWalks, 13
+#knightsWhoSayNi, 13
