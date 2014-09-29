@@ -33,7 +33,7 @@ def buildTagDict(filename):
         reader = csv.reader(f)
         for line in reader:
             for tag in line[4:]:
-                if tag in hashtags.keys():
+                if tag in hashtags:
                     hashtags[tag] += 1
                 else:
                     hashtags[tag] = 1
@@ -52,7 +52,7 @@ def buildTimeDict(filename, granularity):
             # if granularity == 'hour', extract year, month, date, hour from dateTime object and hash
             if granularity == "hour":
                 tweetTime = tweetTime[4:13] + tweetTime[24:]
-            if tweetTime in times.keys():
+            if tweetTime in times:
                 times[tweetTime] += 1
             else:
                 times[tweetTime] = 1
@@ -78,7 +78,7 @@ def buildUserCount(filename):
                 minDate = date
             if date > maxDate:
                 maxDate = date
-            if line[0] in users.keys():
+            if line[0] in users:
                 users[line[0]] += 1
             else:
                 users[line[0]] = 1
