@@ -93,7 +93,7 @@ def binSearch(L, v, iMin, iMax):
     else:
       return iMid
 
-def binSearchIt(L, v):
+def findFirstBin(L, v):
   imin = 0
   imax = len(L) - 1
   firstOccurrence = -1 
@@ -113,17 +113,86 @@ def binSearchIt(L, v):
       imin = imid + 1
   return firstOccurrence
 
-def lastOccurrenceBin(L, v):
-  imin = 0
-  imax = len(L) - 1
-  while imin <= imax:
-    imid = imin + math.ceil(imax - imin/2.0)
-    imid = int(imid)
-    if v >= L[imid]:
-      if v == L[imid]:
-        lastOccurrence = imid
-    imax = imid - 1
 
+def binSearchIt(L, v):
+  start = 0
+  end = len(L) - 1
+  while start < end:
+    middle = start + math.ceil((end - start)/2.0)
+    middle = int(middle)
+    if v < L[middle]:
+      end = middle - 1
+    elif v > L[middle]:
+      start = middle + 1
+    elif v == L[middle]:
+      return middle
+  return middle 
+
+def binNoSearch(L, v):
+  # returns either:
+  #   -index of an occurrence of v in L
+  #   -index of where the binary division terminated
+  #      which can be:
+  #      - equal to v
+  #      - first element greater than v
+  #      - last element less than v 
+
+  length = len(L)
+  start = 0
+  end = length - 1
+  while start < end:
+    middle = start + int(math.floor((end - start)/2))
+    if v == L[middle]:
+      return middle
+    elif v < L[middle]:
+      end = middle - 1
+    else:
+      start = middle + 1
+  return start
+
+def countGreater(L, v):
+  # using binNoSearch()
+  
+  splitIndex = binNoSearch(L, v)
+  print "splitIndex: %d for v = %d" %(splitIndex,v)
+  if L[splitIndex] > v:
+    return len(L) - splitIndex
+  elif L[splitIndex] < v:
+    return len(L) - splitIndex - 1
+  else:
+    while splitIndex < len(L) and L[splitIndex] == v:
+      splitIndex += 1
+    if splitIndex == len(L):
+      return 0
+    else:
+      return len(L) - splitIndex 
+
+L = [1,3,5,5,8,8]
+#L = [1,2,3,3,3]
+print L
+#print countGreater(L, 3)
+
+for v in range(0, 11):
+  print "%d elements greater than %d" %(countGreater(L, v), v)
+print countGreater(L, v)
+
+#L = [1, 3, 5, 7, 9]
+#print L
+#for v in range(11):
+#  splitAt = binNoSearch(L, v)
+#  print "split at %d for v=%d" %(splitAt, v) 
+#print binNoSearch(L, v)
+
+def countGreater(L, v):
+  ind = binSearchIt(L, v)
+  print "val: %d, ind: %d" %(v, ind), L
+  while L[ind] == v and ind < len(L):
+    ind += 1
+  if ind == len(L):
+    return 0
+  else:
+    return len(L) - (ind)
+  
 
 def createSorted(length):
   return sorted(np.random.randint(10, 30, length))
@@ -146,10 +215,17 @@ def testSortFun(nlists, lengthLists):
     print success, "%s %d in" %(ifFound, v), L
  
 
-testSortFun(nlists = 20, lengthLists = 10)
+#testSortFun(nlists = 20, lengthLists = 10)
 
+def testCountGreater(nlists, lengthLists):
+  for n in range(nlists):
+    thisLength = lengthLists + np.random.randint(0,2)
+    L = createSorted(thisLength)
+    v = np.random.randint(10,30)
+    cg = countGreater(L, v)
+    print "%d values greater than %d in list" %(cg, v), L
 
-
+#testCountGreater(nlists = 20, lengthLists = 10)
 
 
 
