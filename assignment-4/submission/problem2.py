@@ -98,17 +98,17 @@ def binSearchIt(L, v):
   imax = len(L) - 1
   firstOccurrence = -1 
   while imin <= imax:
-    print "######"
+    #print "######"
     imid = imin + math.ceil((imax - imin)/2.0) # + 1
     imid = int(imid)
-    print "Inside while: imin:%d, imax:%d, imid:%d, L[imid]:%d" %(imin, imax, imid, L[imid]), L[imin:imax+1]
+    #print "Inside while: imin:%d, imax:%d, imid:%d, L[imid]:%d" %(imin, imax, imid, L[imid]), L[imin:imax+1]
     #raw_input("Press enter:")
     if v <= L[imid]:
       if v == L[imid]:
         firstOccurrence = imid
-        print "firstOccurrence: ", firstOccurrence
+        #print "firstOccurrence: ", firstOccurrence
       imax = imid-1
-      print "imax: %d" %imax
+      #print "imax: %d" %imax
     elif v > L[imid]:
       imin = imid + 1
   return firstOccurrence
@@ -123,16 +123,46 @@ def lastOccurrenceBin(L, v):
       if v == L[imid]:
         lastOccurrence = imid
     imax = imid - 1
-    
-#L = np.linspace(0, 200, 10)
-L = [1,2,3,3,5,6]
-for v in L:
-#v = 1
-  print "Looking for %d" %v
-#bisection = binSearch(L, v, 0, len(L)-1)
-#print "Found at index %d" %bisection
-  first = binSearchIt(L, v)
-  print "Found first:", first
+
+
+def createSorted(length):
+  return sorted(np.random.randint(10, 30, length))
+
+def testFound(L, v, i):
+  if i == -1 and v not in L:
+    return True, "Not found"
+  elif L[i] == v:
+    return True, "Found"
+  else:
+    return False, "Search didn't work"
+
+def testSortFun(nlists, lengthLists):
+  for n in range(nlists):
+    thisLength = lengthLists + np.random.randint(0,2)
+    L = createSorted(thisLength)
+    v = np.random.randint(10,30)
+    foundIndex = binSearchIt(L, v)
+    success, ifFound = testFound(L, v, foundIndex)
+    print success, "%s %d in" %(ifFound, v), L
+ 
+
+testSortFun(nlists = 20, lengthLists = 10)
+
+
+
+
+
+
+  
+##L = np.linspace(0, 200, 10)
+#L = [1,2,3,3,5,6]
+#for v in L:
+##v = 1
+#  print "Looking for %d" %v
+##bisection = binSearch(L, v, 0, len(L)-1)
+##print "Found at index %d" %bisection
+#  first = binSearchIt(L, v)
+#  print "Found first:", first
 
 
 # Performs range search in sorted L (ascending order).
