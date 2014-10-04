@@ -10,30 +10,40 @@ def buildNaive(points,n):
     #print points[0:10]
     return None
 
-def createSubdivision(n):
+def makeWallsOneDim(n):
+    ## Makes n + 1 vertical subdivision walls,
+    ## where the first wall is 0.0 and last is 1.0
+ 
     subDiv = [0 + round(float(k)/n, 7) for k in range(n)]
     subDiv.append(1.0)
     return subDiv
 
-def findSubdivision(subDivision, point):
-    wall = 0
-    while subDivision[wall] <= point[0] and subDivision[wall] != 1.0:
-        wall += 1
-    wall = wall - 1
-    return wall
+#def findSubdivision(subDivision, point):
+#    ## Replaced with findLeftWall
+#    wall = 0
+#    while subDivision[wall] <= point[0] and subDivision[wall] != 1.0:
+#        wall += 1
+#    wall = wall - 1
+#    return wall
 
 def findLeftWall(subDivision, point):
+    ## Given a point finds the rightmost wall to the left of the point
+    ## Used by buildOneDim(), queryOneDim()
+
     wall = 0
     while subDivision[wall] <= point[0] and subDivision[wall] != 1.0:
         wall += 1
     wall = wall - 1
     return wall
 
-def findRightWall(subDivision, point):
-    wall = len(subDivision) - 2
-    while subDivision[wall] > point[0] and subDivision[wall] != 0:
-        wall -= 1
-    return wall
+#def findRightWall(subDivision, point):
+#    ## Given a point finds the rightmost wall to the left of the point
+#    ## Used by queryOneDim()
+#    ## Redundant! Doh!
+#    wall = len(subDivision) - 2
+#    while subDivision[wall] > point[0] and subDivision[wall] != 0:
+#        wall -= 1
+#    return wall
 
 onedim = []
 
@@ -41,11 +51,11 @@ def buildOneDim(points,n):
     del onedim[:] #erasing previous data
 
     #your code here
-    onedim.append(createSubdivision(n))
+    onedim.append(makeWallsOneDim(n))
     for k in range(n):
         onedim.append([])
     for point in points:
-        slot = findSubdivision(onedim[0], point)    
+        slot = findLeftWall(onedim[0], point)    
         onedim[slot+1].append(point)
     return None
 
@@ -86,7 +96,7 @@ def queryOneDim(x0, y0, x1, y1):
 
     #your code here
     leftWall = findLeftWall(onedim[0], (x0, y0))
-    rightWall = findRightWall(onedim[0], (x1, y1))
+    rightWall = findLeftWall(onedim[0], (x1, y1)) # was findRightWall(...)
     for region in onedim[1:]:
         for point in region:
             if pointInRectangle(point, (x0, y0), (x1, y1)):
