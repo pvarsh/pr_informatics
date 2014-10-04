@@ -15,12 +15,11 @@ def solveDict(inputList):
 
 def solveSorted(sortedInputList):
     #compute unique items in inputList
-    #uniqueList = [x for i, x in enumerate(sortedInputList) if x != sortedInputList[i - 1]]
-    uniqueList = [sortedInputList[0]]
-    #for i in xrange(1, len(sortedInputList)):
-    #    if sortedInputList != uniqueList[-1]:
-    #        uniqueList.append(
-    for x in sortedInputList:
-        if x != uniqueList[-1]:
-            uniqueList.append(x)
+    if len(sortedInputList) == 0:
+        uniqueList = []    
+    else:
+        uniqueList = [sortedInputList[0]]
+        for x in sortedInputList:
+            if x != uniqueList[-1]:
+                uniqueList.append(x)
     return uniqueList
