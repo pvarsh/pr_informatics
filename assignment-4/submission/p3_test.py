@@ -16,6 +16,7 @@ points = [((0.5 + k)/n, 0.5) for k in range(n)]
 points.append((1, 0.5))
 points.append((0, 0.5))
 points.append((0.5, 0.5))
+points.append((0.999, 0.5))
 points.sort()
 print "Points: ", points
 
