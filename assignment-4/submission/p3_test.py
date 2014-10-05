@@ -1,3 +1,4 @@
+import random
 import numpy as np
 import problem3 as p3
 import matplotlib.pyplot as plt
@@ -33,7 +34,7 @@ p3.buildOneDim(points, n)
 prettyPrintOneDim(p3.onedim)
 
 bottomLeft = (.5, .4)
-topRight = (.9,.9)
+topRight =   (1 , .6)
 print "####### counting oneDim ########"
 countOneDim = p3.queryOneDim(bottomLeft[0], bottomLeft[1], topRight[0], topRight[1])
 print "####### counting naive  ########"
@@ -50,16 +51,34 @@ countTwoDim = p3.queryTwoDim(bottomLeft[0], bottomLeft[1], topRight[0], topRight
 print "countTwoDim: ", countTwoDim
 
 ### plotting
-xpoints = [point[0] for point in points]
-ypoints = [point[1] for point in points]
-plt.plot(xpoints, ypoints, 'co')
-for wall in p3.onedim[0]:
-    plt.axhline(y = wall, color = "#aaaaaa", linestyle = '--')
-    plt.axvline(x = wall, color = "#aaaaaa", linestyle = '--')
-boxColor = "#ee9a00"
-plt.axhline(y = bottomLeft[1], xmin = bottomLeft[0], xmax = topRight[0], color = boxColor)
-plt.axhline(y = topRight[1], xmin = bottomLeft[0], xmax = topRight[0], color = boxColor)
-plt.axvline(x = bottomLeft[0], ymin = bottomLeft[1], ymax = topRight[1], color = boxColor)
-plt.axvline(x = topRight[0], ymin = bottomLeft[1], ymax = topRight[1], color = boxColor)
-plt.show()
+def plotExample(points, bottomLeft, topRight):
+    xpoints = [point[0] for point in points]
+    ypoints = [point[1] for point in points]
+    plt.plot(xpoints, ypoints, 'co')
+    for wall in p3.onedim[0]:
+        plt.axhline(y = wall, color = "#aaaaaa", linestyle = '--')
+        plt.axvline(x = wall, color = "#aaaaaa", linestyle = '--')
+    boxColor = "#ee9a00"
+    plt.axhline(y = bottomLeft[1], xmin = bottomLeft[0], xmax = topRight[0], color = boxColor)
+    plt.axhline(y = topRight[1], xmin = bottomLeft[0], xmax = topRight[0], color = boxColor)
+    plt.axvline(x = bottomLeft[0], ymin = bottomLeft[1], ymax = topRight[1], color = boxColor)
+    plt.axvline(x = topRight[0], ymin = bottomLeft[1], ymax = topRight[1], color = boxColor)
+    plt.show()
+#plotExample(points, bottomLeft, topRight)
 
+### with random points
+bottomLeft = [1,1]
+topRight = [1,1]
+bottomLeft[0], topRight[0] = tuple(sorted([random.uniform(0,1) for x in range(2)]))
+bottomLeft[1], topRight[1] = tuple(sorted([random.uniform(0,1) for x in range(2)]))
+
+n = 20
+
+points = [(random.uniform(0,1), random.uniform(0,1)) for x in range(n)]
+p3.buildNaive(points, n)
+p3.buildOneDim(points, n)
+p3.buildTwoDim(points, n)
+print "Naive count: ", p3.queryNaive(bottomLeft[0], bottomLeft[1], topRight[0], topRight[1])
+print "OneDim count: ", p3.queryOneDim(bottomLeft[0], bottomLeft[1], topRight[0], topRight[1])
+print "TwoDim count: ", p3.queryTwoDim(bottomLeft[0], bottomLeft[1], topRight[0], topRight[1])
+plotExample(points, bottomLeft, topRight)

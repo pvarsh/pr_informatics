@@ -136,9 +136,10 @@ def queryOneDim(x0, y0, x1, y1):
 
     #your code here
     #TODO: check that rightWall does not need to be incremented like leftWall
-    leftWall = findWall(onedim[0], x0)
-    rightWall = findWall(onedim[0], x1) # was findRightWall(...)
-    for region in onedim[1+leftWall : 1 + rightWall]:
+    leftWall = findWall(onedim[0], x0) + 1 # add 1 because onedim[0] is list of walls
+    rightWall = findWall(onedim[0], x1) + 1 # add 1 as above
+    #print "looking between %f and %f" %(onedim[0][leftWall], onedim[0][rightWall])
+    for region in onedim[leftWall : rightWall + 1]:
         for point in region:
             if pointInRectangle(point, (x0, y0), (x1, y1)):
                 count += 1
@@ -149,13 +150,13 @@ def queryTwoDim(x0, y0, x1, y1):
     count = 0
 
     #your code here
-    leftWall = findWall(twodim[0], x0)
+    leftWall = findWall(twodim[0], x0) + 1 # add 1 because twodim[0] is list of walls
     bottomWall = findWall(twodim[0], y0)
-    rightWall = findWall(twodim[0], x1)
+    rightWall = findWall(twodim[0], x1) + 1 # add 1 because twodim[0] is list of walls
     topWall = findWall(twodim[0], y1)
     
-    for xRegion in twodim[1+leftWall:1 + rightWall]:
-        for yRegion in xRegion[bottomWall:topWall]:
+    for xRegion in twodim[leftWall:rightWall+1]:
+        for yRegion in xRegion[bottomWall:topWall+1]:
             for point in yRegion:
                 if pointInRectangle(point, (x0, y0), (x1, y1)):
                     count += 1
