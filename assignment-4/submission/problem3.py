@@ -138,7 +138,7 @@ def queryOneDim(x0, y0, x1, y1):
     #TODO: check that rightWall does not need to be incremented like leftWall
     leftWall = findWall(onedim[0], x0)
     rightWall = findWall(onedim[0], x1) # was findRightWall(...)
-    for region in onedim[1+leftWall : rightWall]:
+    for region in onedim[1+leftWall : 1 + rightWall]:
         for point in region:
             if pointInRectangle(point, (x0, y0), (x1, y1)):
                 count += 1
@@ -154,7 +154,7 @@ def queryTwoDim(x0, y0, x1, y1):
     rightWall = findWall(twodim[0], x1)
     topWall = findWall(twodim[0], y1)
     
-    for xRegion in twodim[1+leftWall:rightWall]:
+    for xRegion in twodim[1+leftWall:1 + rightWall]:
         for yRegion in xRegion[bottomWall:topWall]:
             for point in yRegion:
                 if pointInRectangle(point, (x0, y0), (x1, y1)):
