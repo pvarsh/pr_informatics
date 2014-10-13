@@ -20,24 +20,6 @@ def makeWalls(n):
     subDiv.append(1.0)
     return subDiv
 
-#def findSubdivision(subDivision, point):
-#    ## Replaced with findLeftWall
-#    wall = 0
-#    while subDivision[wall] <= point[0] and subDivision[wall] != 1.0:
-#        wall += 1
-#    wall = wall - 1
-#    return wall
-
-#def findLeftWall(subDivision, point):
-#    ## Given a point finds the rightmost wall to the left of the point
-#    ## Used by buildOneDim(), queryOneDim()
-#    ## Stupid method using linear search
-#
-#    wall = 0
-#    while subDivision[wall] <= point[0] and subDivision[wall] != 1.0:
-#        wall += 1
-#    wall = wall - 1
-#    return wall
 
 def findWall(subDivision, coordinate):
     delta = subDivision[1] - subDivision[0]
@@ -47,14 +29,6 @@ def findWall(subDivision, coordinate):
         wall = int(math.floor(float(coordinate) / delta))
     return wall
 
-#def findRightWall(subDivision, point):
-#    ## Given a point finds the rightmost wall to the left of the point
-#    ## Used by queryOneDim()
-#    ## Redundant! Doh!
-#    wall = len(subDivision) - 2
-#    while subDivision[wall] > point[0] and subDivision[wall] != 0:
-#        wall -= 1
-#    return wall
 
 onedim = []
 
@@ -108,11 +82,6 @@ def pointInRectangle(point, bottomLeft, topRight):
     if point[0] >= bottomLeft[0] and point[1] >= bottomLeft[1]:
         if point[0] <= topRight[0] and point[1] <= topRight[1]:
             foundInside = True
-    #print "pointInRectangle:"
-    #print "point", point
-    #print "bottomLeft", bottomLeft
-    #print "topRight", topRight
-    #print "foundInside?: ", foundInside
     return foundInside
 
 def queryNaive(x0, y0, x1, y1):
@@ -123,7 +92,6 @@ def queryNaive(x0, y0, x1, y1):
     #your code here
     for point in naive:
         count += pointInRectangle(point, (x0, y0), (x1, y1))
-    #print "qn: ", count
     return count
 
     
@@ -138,12 +106,10 @@ def queryOneDim(x0, y0, x1, y1):
     #TODO: check that rightWall does not need to be incremented like leftWall
     leftWall = findWall(onedim[0], x0) + 1 # add 1 because onedim[0] is list of walls
     rightWall = findWall(onedim[0], x1) + 1 # add 1 as above
-    #print "looking between %f and %f" %(onedim[0][leftWall], onedim[0][rightWall])
     for region in onedim[leftWall : rightWall + 1]:
         for point in region:
             if pointInRectangle(point, (x0, y0), (x1, y1)):
                 count += 1
-    #print "Left: %d %f\nRight: %d %f" %(leftWall, onedim[0][leftWall], rightWall, onedim[0][rightWall])
     return count
 
 def queryTwoDim(x0, y0, x1, y1):

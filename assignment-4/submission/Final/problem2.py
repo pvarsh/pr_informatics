@@ -17,7 +17,10 @@ def searchGreaterSorted(L, v):
   for i in xrange(length):
     if L[i] > v:
        break
-  return length-i
+  if i == length - 1 and L[i] <= v:
+    return 0
+  else:
+    return length-i
 
 
 def binNoSearch(L, v):
@@ -44,10 +47,10 @@ def binNoSearch(L, v):
   return start
 
 def searchGreaterBinSearch(L, v):
-  # using binNoSearch()
-
+  if len(L) == 0:
+    return 0
+  ## using binNoSearch()
   splitIndex = binNoSearch(L, v)
-  #print "splitIndex: %d for v = %d" %(splitIndex,v)
   if L[splitIndex] > v:
     return len(L) - splitIndex
   elif L[splitIndex] < v:
@@ -62,4 +65,4 @@ def searchGreaterBinSearch(L, v):
 
 # Performs range search in sorted L (ascending order).
 def searchInRange(L, v1, v2):
-  return searchGreaterBinSearch(L, v2) - searchGreaterBinSearch(L, v1) 
+  return searchGreaterBinSearch(L, v1) - searchGreaterBinSearch(L, v2) 

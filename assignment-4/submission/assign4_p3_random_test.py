@@ -1,54 +1,27 @@
+#### Test cases for assignment 4 problem 3
+#### Author: Peter Varshavsky
+####
+#### Generates:
+####    - p random points
+####    - random box to search in
+####    - grid of n vertical slots for onedim
+####    - grid of nxn slots for twodim
+#### Runs naive, onedim, and twodim functions to build and count points in the random box
+#### Prints out search results and plots the box and points
+#### 
+#### To use:
+####    place in the same directory as your problem3.py file
+####    in terminal run  
+####    $ python ssign4_p3_random_test.py
+####
+#### Note:
+####    the data structures naive, onedim, and twodim are globals in the namespace of your module problem3
+
 import random
 import numpy as np
 import problem3 as p3
 import matplotlib.pyplot as plt
 
-def prettyPrintOneDim(oneDim):
-    print "############# onedim ##############"
-    print "Walls: ", oneDim[0]
-    for region in oneDim[1:]:
-        print region 
-    print "############# /onedim ##############"
-
-
-##### nonrandom test with 4 subdivisions
-
-n = 4
-points = [((0.5 + k)/n, 0.5) for k in range(n)]
-points.append((1, 0.5))
-points.append((0, 0.5))
-points.append((0.5, 0.5))
-points.append((0.98, .6))
-points.append((0.5, 0.55))
-points.append((0.875, 0.55))
-points.sort()
-print "%d points: " %len(points), points
-
-## naive:
-p3.buildNaive(points, n)
-
-
-p3.onedim = [1,2,3]
-p3.buildOneDim(points, n)
-#print "after creating is done: ", p3.onedim 
-prettyPrintOneDim(p3.onedim)
-
-bottomLeft = (.5, .4)
-topRight =   (1 , .6)
-print "####### counting oneDim ########"
-countOneDim = p3.queryOneDim(bottomLeft[0], bottomLeft[1], topRight[0], topRight[1])
-print "####### counting naive  ########"
-countNaive = p3.queryNaive(bottomLeft[0], bottomLeft[1], topRight[0], topRight[1])
-print "countOneDim: ", countOneDim
-print "countNaive:  ", countNaive
-
-print "####### building twodim ########"
-p3.buildTwoDim(points, n)
-print p3.twodim
-
-print "####### query twodim ########"
-countTwoDim = p3.queryTwoDim(bottomLeft[0], bottomLeft[1], topRight[0], topRight[1])
-print "countTwoDim: ", countTwoDim
 
 ### plotting
 def plotExample(points, bottomLeft, topRight):
@@ -64,22 +37,29 @@ def plotExample(points, bottomLeft, topRight):
     plt.axvline(x = bottomLeft[0], ymin = bottomLeft[1], ymax = topRight[1], color = boxColor)
     plt.axvline(x = topRight[0], ymin = bottomLeft[1], ymax = topRight[1], color = boxColor)
     plt.show()
-#plotExample(points, bottomLeft, topRight)
 
-### with random points
-bottomLeft = [1,1]
-topRight = [1,1]
+##### random box
+bottomLeft = [1,1] # these numbers don't matter, just initialization
+topRight = [1,1] # these numbers don't matter, just initialization
 bottomLeft[0], topRight[0] = tuple(sorted([random.uniform(0,1) for x in range(2)]))
 bottomLeft[1], topRight[1] = tuple(sorted([random.uniform(0,1) for x in range(2)]))
 
+##### setting number of subdivisions and points
 n = 20 # subdivisions
 p = 40 # number of points
 
+##### generating p random points
 points = [(random.uniform(0,1), random.uniform(0,1)) for x in range(p)]
+
+##### building data structures (using your functions in problem3.py)
 p3.buildNaive(points, n)
 p3.buildOneDim(points, n)
 p3.buildTwoDim(points, n)
+
+##### printing counts by three methods (using your functions in problem3.py)
 print "Naive count: ", p3.queryNaive(bottomLeft[0], bottomLeft[1], topRight[0], topRight[1])
 print "OneDim count: ", p3.queryOneDim(bottomLeft[0], bottomLeft[1], topRight[0], topRight[1])
 print "TwoDim count: ", p3.queryTwoDim(bottomLeft[0], bottomLeft[1], topRight[0], topRight[1])
+
+##### plotting all of the above
 plotExample(points, bottomLeft, topRight)
