@@ -8,6 +8,9 @@ from datetime import datetime
 import sys
 import matplotlib.cm as cm
 
+### TODO:
+# Date range in title
+
 ### read data
 in_file = "311_Service_Requests_from_2010_to_Present.csv"
 with open(in_file, 'r') as f:
@@ -23,7 +26,7 @@ pr1_agencies = ['NYPD','DOT','DOB','TLC','DPR']
 fig, ax1 = plt.subplots()
 centers = range(len(pr1_agencies))
 for i in range(len(pr1_agencies)):
-  plt.bar(centers[i], pr1_1[pr1_agencies][i], color = cm.cubehelix(1.0 * i/len(pr1_agencies)), alpha = 0.7) 
+  plt.bar(centers[i], pr1_1[pr1_agencies][i], color = cm.Blues(0.6), alpha = 0.7) 
 ax1.set_title('Complaint volumes by agency')
 ax1.set_xlabel('Agency')
 ax1.set_ylabel('Volume')
