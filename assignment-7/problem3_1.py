@@ -16,6 +16,8 @@ import csv
 ### settings (for ipython only)
 #get_ipython().magic(u'matplotlib inline')
 
+in_file = sys.argv[1]
+zipcode_file = sys.argv[2]
 
 ####### Read 311 data
 
@@ -23,7 +25,7 @@ import csv
 
 ### read data
 ### reading is slow due to parsing two columns as datetime
-in_file = "311_Service_Requests_from_2010_to_Present.csv"
+#in_file = "311_Service_Requests_from_2010_to_Present.csv"
 with open(in_file, 'r') as f:
     df = pd.read_csv(f,
                      index_col = ['Unique Key'],
@@ -51,7 +53,7 @@ df['Incident Zip'] = df['Incident Zip'].apply(lambda x: x.zfill(5))
 
 # In[5]:
 
-zipcode_file = "zipCodePopulationData.csv"
+#zipcode_file = "zipCodePopulationData.csv"
 with open(zipcode_file, 'r') as f:
     zipcodes = pd.read_csv(f)
 zipcodes['Zip Code ZCTA'] = zipcodes['Zip Code ZCTA'].astype(str).apply(lambda x: x.zfill(5))

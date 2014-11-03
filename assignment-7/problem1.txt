@@ -1,2 +1,11 @@
-In producing the plots I made the following assumptions: the list of agencies for problem 1_1 and the parameter k for problem 1_1 are not very large. For larger lists bar widths and type size, orientation, or line breaks would need to be adjusted. After trying different colors manually and using Brewer palettes, I opted to use one color for the plots, since colors do not carry any relevant information.
+Problem 1.1
 
+Data processing.
+I chose to use Pandas for the entire assignment, but to use matplotlib.pyplot without pandas plotting functions. This may slow down the run times, but is very convenient for data exploration in iPython.
+For Problem 1, I read the entire csv file into a DataFrame without parsing dates. The code for parsing dates and computing min and max dates for the plot title is included but commented out to improve performance. Once data are in the data frame, all operations are fast.
+
+Plotting choices.
+I decided to use only one color for the bar plots since colors do not actually convey any information here. For clarity I added horizontal grid lines at tick levels. I made small adjustments to xlimits to better position the plot. The plot assumes that the number of agencies the user is trying to plot is not large.
+
+Problem 1.2
+The same processing as 1.1. Bar widths and x-axis labels work well so long as the number of bars (complaint types) is not too large.

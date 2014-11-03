@@ -1,0 +1,9 @@
+Problem 2.1
+Data processing.
+This problem runs slowly since I am asking pandas to parse ‘Date Created’ into a timestamp object. Aggregation was done using Pandas groupby function.
+
+Plotting.
+Color selection was done using equally spaced intervals on the Brewer Accent continuous palette. The selection is not great, as NYPD looks less bright than the other colors. I haven’t yet learned a way to get good automatic discrete color selection with Brewer palettes. There was a clear weekly pattern to the time series, so I chose to place x-ticks on Mondays and added vertical grid lines at x-tick levels.
+
+Problem 2.2
+Data processing and plotting choices are the same as in the first part.
