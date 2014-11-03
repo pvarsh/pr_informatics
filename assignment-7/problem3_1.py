@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[2]:
+# In[30]:
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -80,13 +80,13 @@ zip_pop_count.columns = ['zip', 'population', 'complaints']
 
 ####### Plot
 
-# In[24]:
+# In[32]:
 
 fig, ax = plt.subplots(figsize = (10, 5))
-ax.scatter(zip_pop_count['population'], zip_pop_count['complaints'], lw = 0, c = '#EE9A00')
+ax.scatter(zip_pop_count['population'], zip_pop_count['complaints'], lw = 0, c = '#a65200')
 ax.set_xlabel('2010 census population')
 ax.set_ylabel('Number of 311 complaints')
-ax.set_title('311 Complaints by Zip Code')
+ax.set_title('311 Complaints by Zip Code Jun/1/2013-Aug/31/2013')
 xlims = ax.get_xlim()
 ax.set_xlim(xlims[0]/4, xlims[1])
 ylims = ax.get_ylim()
@@ -132,7 +132,7 @@ zipbor_d = {'10065': 3, '10069': 3, '10453': 1, '10013': 3, '10451': 1, '10457':
 
 ####### Plot with borough colors
 
-# In[13]:
+# In[31]:
 
 bors = []
 for z in zip_pop_count['zip']:
@@ -150,14 +150,20 @@ for borough, borough_num in boroughs.iteritems():
                lw = 0,
                c = cm.Dark2(colors[borough_num]),
                label = borough,
-               s = 30)
+               s = 30,
+               alpha = .8)
 ax.set_xlabel('2010 census population')
 ax.set_ylabel('Number of 311 complaints')
-ax.set_title('311 Complaints by Zip Code')
+ax.set_title('311 Complaints by Zip Code Jun/1/2013-Aug/31/2013')
 xlims = ax.get_xlim()
 ax.set_xlim(xlims[0]/4, xlims[1])
 ylims = ax.get_ylim()
 ax.set_ylim(ylims[0]/2.5, ylims[1])
 ax.legend(loc = 2)
 plt.show()
+
+
+# In[ ]:
+
+
 
