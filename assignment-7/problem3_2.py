@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -9,13 +9,13 @@ import pandas as pd
 from datetime import datetime
 import matplotlib.cm as cm
 
-### settings
+### settings (for ipython only)
 #get_ipython().magic(u'matplotlib inline')
 
 
 ####### Read 311 data
 
-# In[2]:
+# In[3]:
 
 ### read data
 ### reading is slow due to parsing two columns as datetime
@@ -30,7 +30,7 @@ with open(in_file, 'r') as f:
 
 ####### Cleaning zip codes
 
-# In[3]:
+# In[6]:
 
 ### filling NaN values in order to be able to run pd.str functions
 df['Incident Zip'] = df['Incident Zip'].fillna(0).astype(str)
@@ -46,7 +46,7 @@ df['Incident Zip'] = df['Incident Zip'].apply(lambda x: x.zfill(5))
 
 ####### Read ZIP codes with populations data
 
-# In[4]:
+# In[7]:
 
 zipcode_file = "zipCodePopulationData.csv"
 with open(zipcode_file, 'r') as f:
@@ -56,7 +56,7 @@ zipcodes['Zip Code ZCTA'] = zipcodes['Zip Code ZCTA'].astype(str).apply(lambda x
 
 ####### Which agencies got most complaints in each zip code
 
-# In[5]:
+# In[17]:
 
 ### group by agency and zip
 grouped_zip_agency = df['Incident Zip'].groupby([df['Incident Zip'], df['Agency']])
@@ -107,7 +107,7 @@ all_agencies = list(df['Agency'])
 
 ####### Plot
 
-# In[17]:
+# In[18]:
 
 fig, ax = plt.subplots(figsize=(10, 5))
 colors = [k * 1.0/(len(agencies) + 2) for k in range(len(agencies) + 2)]
