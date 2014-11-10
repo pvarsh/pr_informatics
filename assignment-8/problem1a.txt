@@ -1,0 +1,1 @@
+Marking the data points with symbols rather than simply using a line plot helps communicate data granularity. I chose to not include 0 on the y-axis in order to not create too much unused space in the plot. For x-axis I used ticks and labels at the beginning of each calendar quarter. A grid helps read the values for data points on the graph.
