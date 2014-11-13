@@ -6,3 +6,7 @@
 zip_borough.csv
 tl_2013_us_zcta510.zip
 *.shp
+*.prj
+*.dbf
+*.shx
+*.shp.xml
