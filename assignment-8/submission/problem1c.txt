@@ -1,0 +1,1 @@
+The juxtaposed and superposed plots tell a different story. The juxtaposed plot may show price misleadingly, but it shows the time correlation more clearly than the superposed plot. Possibly a superposed plot of normalized stock prices would show the correlations better than the juxtaposed unscaled plot.

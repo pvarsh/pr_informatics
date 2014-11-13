@@ -1,0 +1,1 @@
+I selected 4-hour bins, which allows one to see the submission frequency changes around the due dates with relatively high frequency.
