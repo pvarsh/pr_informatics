@@ -11,7 +11,33 @@ def getZipBorough(zipBoroughFilename):
     csvReader.next()
 
     return {row[0]: row[1] for row in csvReader}
-  
+   
+def getZipAgencyCount(complaintsFile, zipBorough):
+  badZips = set()
+  zipAgencyCount = {zipCode : {} for zipCode in zipBorough}
+
+  with open(complaintsFile, 'r') as f:
+    reader = csv.reader(f)
+    header = reader.next() # skip header row
+    for complaint in reader:
+      complaintZip = complaint[8]
+      complaintAgency = complaint[3]
+      try:
+        zipAsInt = int(complaintZip)
+        zipAsStr = str(zipAsInt).zfill(5)
+        if zipAsStr in zipAgencyCount:
+          if complaintAgency in zipAgencyCount[zipAsStr]:
+            zipAgencyCount[zipAsStr][complaintAgency] += 1
+          else:
+            zipAgencyCount[zipAsStr][complaintAgency] = 1
+       #   
+       # if complaint[3] in agencyToCount:
+       #    agencyToCount[complaint[3]] += 1
+       # else:
+       #    agencyToCount[complaint[3]]
+      except:
+        badZips.add(complaint[8])
+  return zipAgencyCount 
 
 def drawPlot(shapeFilename, zipBorough):
   # Read the ShapeFile
@@ -70,7 +96,7 @@ def drawPlot(shapeFilename, zipBorough):
 if __name__ == '__main__':
   if len(sys.argv) != 3:
     print 'Usage:'
-    print sys.argv[0] + ' <complaints>' + ' <zipboroughfilename>'
+    print sys.argv[0] + ' <complaints> <zipboroughfilename> <shapefile>'
     print '\ne.g.: ' + sys.argv[0] + ' data/nyshape.shp zip_borough.csv'
   else:
     zipBorough = getZipBorough(sys.argv[2])
@@ -81,39 +107,48 @@ if __name__ == '__main__':
     #drawPlot(sys.argv[1], zipBorough)
     
     ### Work with CSV
-    badZips = set()
-    zipAgencyCount = {zipCode : {} for zipCode in zipBorough}    
-
-    print "CSV"
-    complaintsFile = "311_Service_Requests_from_2010_to_Present.csv" 
-    with open(complaintsFile, 'r') as f:
-      reader = csv.reader(f)
-      header = reader.next() # skip header row
-      for field in ['Agency', 'Incident Zip']:
-        print(field, header.index(field))
-      for complaint in reader:
-        complaintZip = complaint[8]
-        complaintAgency = complaint[3]
-        try:
-          zipAsInt = int(complaintZip)
-          zipAsStr = zipAsInt.zfill(5)
-          if zipAsStr in zipBorough:
-            if complaintAgency in zipAgencyCount[zipAsStr]:
-              zipAgencyCount[zipAsStr][complaintAgency] += 1
-            else:
-              zipAgencyCount[zipAsStr][complaintAgency] = 1
-         #   
-         # if complaint[3] in agencyToCount:
-         #    agencyToCount[complaint[3]] += 1
-         # else:
-         #    agencyToCount[complaint[3]]
-        except:
-          badZips.add(complaint[8])   
-         
-    print badZips
-    for badZip in badZips:
-      try:
-        print(int(badZip))
-      except:
-        pass
-    print zipAgencyCount 
+    zipAgencyCount = getZipAgencyCount(sys.argv[1], zipBorough) 
+    for zc in zipAgencyCount.keys():
+      print zc, zipAgencyCount[zc], '\n'
+    zipMaxAgency = {zipCode: max(zipAgencyCount[zipCode], key = zipAgencyCount[zipCode].get) for zipCode in zipAgencyCount}
+    print zipMaxAgency
+    print '\n'
+#    badZips = set()
+#    zipAgencyCount = {zipCode : {} for zipCode in zipBorough}
+#    for zc in zipAgencyCount.keys():
+#      print 'z: ', zc, type(zc)   
+#
+#    complaintsFile = "311_Service_Requests_from_2010_to_Present.csv" 
+#    with open(complaintsFile, 'r') as f:
+#      reader = csv.reader(f)
+#      header = reader.next() # skip header row
+#      #for field in ['Agency', 'Incident Zip']:
+#      #  print(field, header.index(field))
+#      for complaint in reader:
+#        complaintZip = complaint[8]
+#        complaintAgency = complaint[3]
+#        try:
+#          zipAsInt = int(complaintZip)
+#          #print zipAsInt
+#          zipAsStr = str(zipAsInt).zfill(5)
+#          if zipAsStr in zipAgencyCount:
+#            if complaintAgency in zipAgencyCount[zipAsStr]:
+#              zipAgencyCount[zipAsStr][complaintAgency] += 1
+#            else:
+#              zipAgencyCount[zipAsStr][complaintAgency] = 1
+#         #   
+#         # if complaint[3] in agencyToCount:
+#         #    agencyToCount[complaint[3]] += 1
+#         # else:
+#         #    agencyToCount[complaint[3]]
+#        except:
+#          badZips.add(complaint[8])   
+#         
+#    print badZips
+#    for badZip in badZips:
+#      try:
+#        print(int(badZip))
+#      except:
+#        pass
+    #print zipAgencyCount 
+    #print badZips
