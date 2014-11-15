@@ -14,7 +14,7 @@ def getZipBorough(zipBoroughFilename):
    
 def getZipAgencyCount(complaintsFile, zipBorough):
   badZips = set()
-  zipAgencyCount = {zipCode : {} for zipCode in zipBorough}
+  zipAgencyCount = {}
 
   with open(complaintsFile, 'r') as f:
     reader = csv.reader(f)
@@ -25,11 +25,14 @@ def getZipAgencyCount(complaintsFile, zipBorough):
       try:
         zipAsInt = int(complaintZip)
         zipAsStr = str(zipAsInt).zfill(5)
-        if zipAsStr in zipAgencyCount:
+        if zipAsStr in zipBorough:
+          if zipAsStr not in zipAgencyCount:
+            zipAgencyCount[zipAsStr] = {}
           if complaintAgency in zipAgencyCount[zipAsStr]:
             zipAgencyCount[zipAsStr][complaintAgency] += 1
           else:
             zipAgencyCount[zipAsStr][complaintAgency] = 1
+            
        #   
        # if complaint[3] in agencyToCount:
        #    agencyToCount[complaint[3]] += 1
