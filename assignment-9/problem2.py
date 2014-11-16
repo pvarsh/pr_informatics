@@ -67,29 +67,29 @@ def problem2color(zipAgencyCount, agency1, agency2):
       maxColor = colorCode
     if colorCode >= 0 and colorCode < minColor:
       minColor = colorCode
-  print "COLORS for polygons:"  
+  #print "COLORS for polygons:"  
   for zipCode in zipColor:
     red = hex(int(zipColor[zipCode] * 255))[2:5]
     blue = hex(int((1 - zipColor[zipCode]) * 255))[2:5]
     color = "#"+red+"00"+blue
-    print color
+    #print color
     zipColor[zipCode] = color
 
   ### Legend colors
-  print "COLORS for legend:"
+  #print "COLORS for legend:"
   legendColors = []
   colorRange = [x*(1.0/40) for x in range(41)]
-  print colorRange
+  #print colorRange
   for color in colorRange:
     red = hex(int(color * 255))[2:5]
     red = red.zfill(2)
-    print "red: ", red
+    #print "red: ", red
     blue = hex(int((1-color)*255))[2:5]
     blue = blue.zfill(2)
-    print "blue: ", blue, hex(int((1-color)*255))
+    #print "blue: ", blue, hex(int((1-color)*255))
     color = "#"+red+"00"+blue
     legendColors.append(color)
-    print color
+    #print color
   return zipColor, legendColors
 
 def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors, legendColors, agency1, agency2):
@@ -175,7 +175,7 @@ def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors, legendColors, a
   
   TOOLS="pan,wheel_zoom,box_zoom,reset,previewsave"
   fig = bk.figure(title="311 Complaints by Zip Code", \
-         tools=TOOLS)
+         tools=TOOLS, background_fill = "#f8f8f8")
          
   
   # Creates the polygons.
