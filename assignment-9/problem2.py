@@ -191,21 +191,14 @@ def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors, legendColors, a
   fonts = ["Comic sans MS", "Papyrus", "Curlz", "Impact", "Zapf dingbats", "Comic sans MS", "Papyrus", "Curlz", "Impact", "Zapf Dingbats", "Comic sans MS"]
    
   ### Legend
-
   x = -74.25
   y = 40.8
-
-
   height = 0.003
   legend_box_y = y + 0.5 * height * len(legendColors) 
   bk.rect([x+0.032], [legend_box_y], width = 0.12, height = height*len(legendColors)*1.15, color = "#ffffff", line_color = "gray")
   #x = -74.25
   #y = 40.9
   for color in legendColors: 
-  #  #print "Color: ", a
-  #  #print "x:", x
-  #  #print "y:", y
-  # 
     bk.rect([x], [y], color = color, width=0.03, height=height)
     #bk.text([x], [y], text = agency, angle=0, text_font_size="7pt", text_align="center", text_baseline="middle")
     y = y + height 
