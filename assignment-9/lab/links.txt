@@ -1,0 +1,6 @@
+http://bokeh.pydata.org/ #plotting package 
+http://code.google.com/p/pyshp/ #package to load shape files
+https://www.census.gov/cgi-bin/geo/shapefiles2013/main #link to shape file, choose zip code tabulation areas
+https://nycopendata.socrata.com/Social-Services/311-Service-Requests-from-2010-to-Present/erm2-nwe9 #311 data
+
+
