@@ -6,6 +6,8 @@ from bokeh.objects import HoverTool
 from collections import OrderedDict
 import bokeh.embed
 import bokeh.resources
+import math
+import numpy as np
 
 def getZipBorough(zipBoroughFilename):
   # Wrong: reads all complaints and keeps zips which have complaints.
@@ -45,6 +47,55 @@ def getZipAgencyCount(complaintsFile, zipBorough):
       except:
         badZips.add(complaint[8])
   return zipAgencyCount 
+  
+def gridCounts(complaint_file, n):
+  north = 40.915
+  east = -73.651
+  south = 40.496
+  west = -74.256
+  
+  width = east - west
+  height = north - south
+  print width, height
+
+  grid = [[1 for cell in range(n)] for cell in range(n)] # 1 for log transform
+  print grid
+  
+  
+  with open(complaint_file, 'r') as f:
+    reader = csv.reader(f)
+    header = reader.next()
+    lat_ind = header.index("Latitude")
+    lon_ind = header.index("Longitude")
+    for row in reader:
+      try:
+        lat = float(row[lat_ind])
+        lon = float(row[lon_ind])
+      except:
+        pass
+      if lat < north and lat > south and lon < east and lon > west:
+        col = int((lon - west)/( (east-west)/n ))
+        row = int((lat - south)/( (north - south)/n ))
+        grid[row][col] += 1
+  for row in grid:
+    print row
+  log_grid = [[math.log(count) for count in col] for col in grid]
+  for row in log_grid:
+    print row 
+  
+  ### Find centers of grid cells
+  centersHorizontal = [east + width * (i+0.5) for i in range(n)]
+  centersVertical = [south + height * (i + 0.5) for i in range(n)]
+  print "centers H"    
+  print centersHorizontal
+  print "centers V"
+  print centersVertical
+  centers_lon = centersHorizontal * n
+  centers_lat = [x for x in centersVertical for i in range(n)]
+  print centers_lon
+  print centers_lat
+
+  return {'counts': grid, 'log_counts': log_grid}, {'lon': centers_lon, 'lat': centers_lat}
 
 def problem2color(zipAgencyCount, agency1, agency2):
   zipColor = {}
@@ -102,6 +153,7 @@ def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors, legendColors, a
   hoverAgency = []
   hoverComplaints = []
   polygons = {'lat_list': [], 'lng_list': [], 'centerLat_list': [], 'centerLon_list': []}
+  
 
   record_index = 0
   for r in dat.iterRecords():
@@ -125,7 +177,7 @@ def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors, legendColors, a
           end   = shape.parts[part + 1]
           
         points = shape.points[start : end]
-
+        
         # Breaks into lists for lat/lng.
         lngs = [p[0] for p in points]
         lats = [p[1] for p in points]
@@ -166,11 +218,13 @@ def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors, legendColors, a
   # Assign colors to agencies 
   polygons['colors'] = [zipColors[zipCode] for zipCode in zipCodes]
   
+  
+
   # Prepare hover
   #source = bk.ColumnDataSource(data=dict(hoverAgency=hoverAgency, hoverZip=hoverZip, hoverComplaintCount=hoverComplaintCount,))
   source = bk.ColumnDataSource(data=dict(hoverZip = hoverZip, hoverAgency = hoverAgency, hoverComplaints = hoverComplaints),)
   # Creates the Plot
-  bk.output_file("problem2.html")
+  bk.output_file("problem3.html")
   bk.hold()
   
   TOOLS="pan,wheel_zoom,box_zoom,reset,previewsave"
@@ -238,4 +292,4 @@ if __name__ == '__main__':
     #zipMaxAgency = {zipCode: max(zipAgencyCount[zipCode], key = zipAgencyCount[zipCode].get) for zipCode in zipAgencyCount}
     #print zipMaxAgency
     ### Draw plot 
-    drawPlot(sys.argv[3], zipBorough, zipMaxAgency, zipColors, legendColors, agency1, agency2)
+    #drawPlot(sys.argv[3], zipBorough, zipMaxAgency, zipColors, legendColors, agency1, agency2)
