@@ -46,7 +46,38 @@ def getZipAgencyCount(complaintsFile, zipBorough):
         badZips.add(complaint[8])
   return zipAgencyCount 
 
-def drawPlot(shapeFilename, zipBorough, zipMaxAgency):
+def problem2color(zipAgencyCount, agency1, agency2):
+  zipColor = {}
+  minColor = 1
+  maxColor = 0
+  for zipCode in zipAgencyCount:
+    print zipCode
+    agency1count = 0
+    agency2count = 0
+    if agency1 in zipAgencyCount[zipCode]:
+      agency1count = zipAgencyCount[zipCode][agency1]
+    if agency2 in zipAgencyCount[zipCode]:
+      agency2count = zipAgencyCount[zipCode][agency2]
+    
+    if (agency1count + agency2count) == 0:
+      colorCode = -1
+    else:
+      colorCode = float(agency1count)/(agency1count + agency2count)
+    zipColor[zipCode] = colorCode
+    if colorCode > maxColor:
+      maxColor = colorCode
+    if colorCode >= 0 and colorCode < minColor:
+      minColor = colorCode
+    
+  for zipCode in zipColor:
+    red = hex(int(zipColor[zipCode] * 255))[2:5]
+    blue = hex(int((1 - zipColor[zipCode]) * 255))[2:5]
+    color = "#"+red+"00"+blue
+    zipColor[zipCode] = color
+    
+  return zipColor
+
+def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors):
   # Read the ShapeFile
   dat = shapefile.Reader(shapeFilename)
   
@@ -118,14 +149,13 @@ def drawPlot(shapeFilename, zipBorough, zipMaxAgency):
   agencies = [agency[0] for agency in agencies]
   
   # Assign colors to agencies 
-  agencyColor = {agencies[i] : brewer11[i] for i in range(len(brewer11))}
-  polygons['colors'] = [agencyColor[zipMaxAgency[zipCode][0]] for zipCode in zipCodes]
+  polygons['colors'] = [zipColors[zipCode] for zipCode in zipCodes]
   
   # Prepare hover
   #source = bk.ColumnDataSource(data=dict(hoverAgency=hoverAgency, hoverZip=hoverZip, hoverComplaintCount=hoverComplaintCount,))
   source = bk.ColumnDataSource(data=dict(hoverZip = hoverZip, hoverAgency = hoverAgency, hoverComplaints = hoverComplaints),)
   # Creates the Plot
-  bk.output_file("zipCodes.html")
+  bk.output_file("problem2.html")
   bk.hold()
   
   TOOLS="pan,wheel_zoom,box_zoom,reset,previewsave,hover"
@@ -157,31 +187,30 @@ def drawPlot(shapeFilename, zipBorough, zipMaxAgency):
   y = 40.50
   #x = -74.25
   #y = 40.9
-  for agency, color in agencyColor.iteritems():
-    #print "Color: ", a
-    #print "x:", x
-    #print "y:", y
-   
-    bk.rect([x], [y], color = color, width=0.03, height=0.015)
-    bk.text([x], [y], text = agency, angle=0, text_font_size="7pt", text_align="center", text_baseline="middle")
-    y = y + 0.015
+  #for agency, color in agencyColor.iteritems():
+  #  #print "Color: ", a
+  #  #print "x:", x
+  #  #print "y:", y
+  # 
+  #  bk.rect([x], [y], color = color, width=0.03, height=0.015)
+  #  bk.text([x], [y], text = agency, angle=0, text_font_size="7pt", text_align="center", text_baseline="middle")
+  #  y = y + 0.015
 
   #bokeh.embed.components(fig, bokeh.resources.CDN)
   bk.show()
 
 if __name__ == '__main__':
-  if len(sys.argv) != 4:
+  if len(sys.argv) != 6:
     print 'Usage:'
-    print sys.argv[0] + ' <complaints> <zipboroughfilename> <shapefile>'
+    print sys.argv[0] + ' <complaints> <zipboroughfilename> <shapefile> <agency1> <agency2>'
     print '\ne.g.: ' + sys.argv[0] + ' data/nyshape.shp zip_borough.csv'
   else:
     zipBorough = getZipBorough(sys.argv[2])
-    #zipBorough = {'10004':'Manhattan'}
-    #zipBorough.pop('10004')
-
     
     ### Work with CSV
     zipAgencyCount = getZipAgencyCount(sys.argv[1], zipBorough)
+    zipColors = problem2color(zipAgencyCount, sys.argv[4], sys.argv[5])
+    print "colors: ", zipColors
     zipMaxAgency = {}
     for zipCode in zipAgencyCount:
       maxAgency = max(zipAgencyCount[zipCode], key = zipAgencyCount[zipCode].get)
@@ -190,4 +219,4 @@ if __name__ == '__main__':
     #zipMaxAgency = {zipCode: max(zipAgencyCount[zipCode], key = zipAgencyCount[zipCode].get) for zipCode in zipAgencyCount}
     #print zipMaxAgency
     ### Draw plot 
-    drawPlot(sys.argv[3], zipBorough, zipMaxAgency)
+    drawPlot(sys.argv[3], zipBorough, zipMaxAgency, zipColors)
