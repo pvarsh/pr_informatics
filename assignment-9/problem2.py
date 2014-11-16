@@ -51,7 +51,6 @@ def problem2color(zipAgencyCount, agency1, agency2):
   minColor = 1
   maxColor = 0
   for zipCode in zipAgencyCount:
-    print zipCode
     agency1count = 0
     agency2count = 0
     if agency1 in zipAgencyCount[zipCode]:
@@ -68,16 +67,32 @@ def problem2color(zipAgencyCount, agency1, agency2):
       maxColor = colorCode
     if colorCode >= 0 and colorCode < minColor:
       minColor = colorCode
-    
+  print "COLORS for polygons:"  
   for zipCode in zipColor:
     red = hex(int(zipColor[zipCode] * 255))[2:5]
     blue = hex(int((1 - zipColor[zipCode]) * 255))[2:5]
     color = "#"+red+"00"+blue
+    print color
     zipColor[zipCode] = color
-    
-  return zipColor
 
-def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors):
+  ### Legend colors
+  print "COLORS for legend:"
+  legendColors = []
+  colorRange = [x*(1.0/40) for x in range(41)]
+  print colorRange
+  for color in colorRange:
+    red = hex(int(color * 255))[2:5]
+    red = red.zfill(2)
+    print "red: ", red
+    blue = hex(int((1-color)*255))[2:5]
+    blue = blue.zfill(2)
+    print "blue: ", blue, hex(int((1-color)*255))
+    color = "#"+red+"00"+blue
+    legendColors.append(color)
+    print color
+  return zipColor, legendColors
+
+def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors, legendColors, agency1, agency2):
   # Read the ShapeFile
   dat = shapefile.Reader(shapeFilename)
   
@@ -158,20 +173,13 @@ def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors):
   bk.output_file("problem2.html")
   bk.hold()
   
-  TOOLS="pan,wheel_zoom,box_zoom,reset,previewsave,hover"
+  TOOLS="pan,wheel_zoom,box_zoom,reset,previewsave"
   fig = bk.figure(title="311 Complaints by Zip Code", \
-         tools=TOOLS, plot_width=800, plot_height=650)
+         tools=TOOLS)
+         
   
   # Creates the polygons.
-  bk.patches(polygons['lng_list'], polygons['lat_list'], fill_color=polygons['colors'], line_color="gray", source = source)
-  
-  # RP: add hover
-  hover = bk.curplot().select(dict(type=HoverTool))
-  hover.tooltips = OrderedDict([
-    ("Zip", "@hoverZip"),
-    ("Agency", "@hoverAgency"),
-    ("Number of complaints", "@hoverComplaints"),
-  ])
+  bk.patches(polygons['lng_list'], polygons['lat_list'], fill_color=polygons['colors'], line_color="gray") 
   
   ### Zip codes as text on polygons 
   #for i in range(len(polygons['centerLat_list'])):
@@ -183,19 +191,28 @@ def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors):
   fonts = ["Comic sans MS", "Papyrus", "Curlz", "Impact", "Zapf dingbats", "Comic sans MS", "Papyrus", "Curlz", "Impact", "Zapf Dingbats", "Comic sans MS"]
    
   ### Legend
-  x = -73.66
-  y = 40.50
+
+  x = -74.25
+  y = 40.8
+
+
+  height = 0.003
+  legend_box_y = y + 0.5 * height * len(legendColors) 
+  bk.rect([x+0.032], [legend_box_y], width = 0.12, height = height*len(legendColors)*1.15, color = "#ffffff", line_color = "gray")
   #x = -74.25
   #y = 40.9
-  #for agency, color in agencyColor.iteritems():
+  for color in legendColors: 
   #  #print "Color: ", a
   #  #print "x:", x
   #  #print "y:", y
   # 
-  #  bk.rect([x], [y], color = color, width=0.03, height=0.015)
-  #  bk.text([x], [y], text = agency, angle=0, text_font_size="7pt", text_align="center", text_baseline="middle")
-  #  y = y + 0.015
-
+    bk.rect([x], [y], color = color, width=0.03, height=height)
+    #bk.text([x], [y], text = agency, angle=0, text_font_size="7pt", text_align="center", text_baseline="middle")
+    y = y + height 
+  legend_bottom_y = 40.797
+  legend_top_y = legend_bottom_y + 0.92 * height * len(legendColors)
+  bk.text([-74.225], [legend_bottom_y], text = agency2, angle = 0, text_font_size = "7pt", text_align = "left")
+  bk.text([-74.225], [legend_top_y], text = agency1, angle = 0, text_font_size = "7pt", text_align = "left")
   #bokeh.embed.components(fig, bokeh.resources.CDN)
   bk.show()
 
@@ -206,11 +223,13 @@ if __name__ == '__main__':
     print '\ne.g.: ' + sys.argv[0] + ' data/nyshape.shp zip_borough.csv'
   else:
     zipBorough = getZipBorough(sys.argv[2])
+    agency1 = sys.argv[4]
+    agency2 = sys.argv[5]
     
     ### Work with CSV
     zipAgencyCount = getZipAgencyCount(sys.argv[1], zipBorough)
-    zipColors = problem2color(zipAgencyCount, sys.argv[4], sys.argv[5])
-    print "colors: ", zipColors
+    zipColors, legendColors = problem2color(zipAgencyCount, sys.argv[4], sys.argv[5])
+    #print "colors: ", zipColors
     zipMaxAgency = {}
     for zipCode in zipAgencyCount:
       maxAgency = max(zipAgencyCount[zipCode], key = zipAgencyCount[zipCode].get)
@@ -219,4 +238,4 @@ if __name__ == '__main__':
     #zipMaxAgency = {zipCode: max(zipAgencyCount[zipCode], key = zipAgencyCount[zipCode].get) for zipCode in zipAgencyCount}
     #print zipMaxAgency
     ### Draw plot 
-    drawPlot(sys.argv[3], zipBorough, zipMaxAgency, zipColors)
+    drawPlot(sys.argv[3], zipBorough, zipMaxAgency, zipColors, legendColors, agency1, agency2)
