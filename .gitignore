@@ -11,7 +11,8 @@ tl_2013_us_zcta510.zip
 *.shx
 *.shp.xml
 zipCodes.html
-*problem2.html
+problem2.html
+*.html
 problem3.html
 problem1rp.py
 problem2rp.py
