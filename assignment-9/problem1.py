@@ -1,3 +1,6 @@
+#TODO: Fixed legend that doesn't scale with map and/or disable hover on legend. Possibly: make legend hover explain acronyms.
+
+
 import csv
 import shapefile
 import sys

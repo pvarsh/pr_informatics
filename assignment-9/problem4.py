@@ -1,3 +1,5 @@
+#TODO: Mathematically correct centroids, legend (implemented in problem 3), fix mapping of non-contiguous regions.
+
 import csv
 import shapefile
 import sys
