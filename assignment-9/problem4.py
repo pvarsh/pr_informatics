@@ -42,7 +42,7 @@ def getZipCount(complaintsFile, zipBorough):
        #    agencyToCount[complaint[3]]
       except:
         badZips.add(complaint[8])
-  print zipCount
+  #print zipCount
   return zipCount 
   
 def gridCounts(complaint_file, n):
@@ -104,6 +104,33 @@ def drawPlot(shapeFilename, zipBorough, zipCount):
 
       # Gets shape for this zip.
       shape = dat.shapeRecord(record_index).shape
+      
+      ### Only first polygon if non-contiguous zip codes
+      #firstPoint = shape.parts[0]
+      #if len(shape.parts) > 1:
+      #  lastPoint = shape.parts[1]
+      #else:
+      #  lastPoint = len(shape.points)
+      #zipCodes.append(currentZip)
+      #points = shape.points[firstPoint : lastPoint]
+      #
+      ## Breaks into lists for lat/lng.
+      #lngs = [p[0] for p in points]
+      #lats = [p[1] for p in points]
+
+      ## Calculate centers
+      #center_lngs = min(lngs) + (max(lngs) - min(lngs))/2
+      #center_lats = min(lats) + (max(lats) - min(lats))/2
+
+      ## Store centroids for current part shape
+      #polygons['centerLat_list'].append(center_lats)
+      #polygons['centerLon_list'].append(center_lngs)
+
+      ## Stores lat/lng for current zip shape.
+      #polygons['lng_list'].append(lngs)
+      #polygons['lat_list'].append(lats)
+      
+      ### All shapes for each zip code
       for part in range(len(shape.parts)):
         zipCodes.append(currentZip)
         start = shape.parts[part]
@@ -157,11 +184,11 @@ def drawPlot(shapeFilename, zipBorough, zipCount):
       circleSizes.append(zipCount[zipCode])
     else:
       circleSizes.append(1) # for taking logs
-  print circleSizes
-  print "aaaaaaaaaaaaaaaaaaaaa: ", len(polygons['lng_list']), len(circleSizes)
+  #print circleSizes
+  #print "aaaaaaaaaaaaaaaaaaaaa: ", len(polygons['lng_list']), len(circleSizes)
 
   logCircleSizes = ((np.log(np.array(circleSizes)))**3.7) * 0.009 
-  print logCircleSizes
+  #print logCircleSizes
   logCircleSizes = list(logCircleSizes)
   
 
