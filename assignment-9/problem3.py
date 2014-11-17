@@ -22,6 +22,7 @@ def getZipAgencyCount(complaintsFile, zipBorough):
   badZips = set()
   zipAgencyCount = {}
 
+  counter = 0
   with open(complaintsFile, 'r') as f:
     reader = csv.reader(f)
     header = reader.next() # skip header row
@@ -38,7 +39,6 @@ def getZipAgencyCount(complaintsFile, zipBorough):
             zipAgencyCount[zipAsStr][complaintAgency] += 1
           else:
             zipAgencyCount[zipAsStr][complaintAgency] = 1
-            
        #   
        # if complaint[3] in agencyToCount:
        #    agencyToCount[complaint[3]] += 1
@@ -46,6 +46,8 @@ def getZipAgencyCount(complaintsFile, zipBorough):
        #    agencyToCount[complaint[3]]
       except:
         badZips.add(complaint[8])
+      counter += 1
+  #print "############################ Counter: ", counter
   return zipAgencyCount 
   
 def gridCounts(complaint_file, n):
@@ -138,24 +140,50 @@ def drawPlot(shapeFilename, zipBorough, grids, centers, gridLines):
   bk.output_file("problem3.html")
   bk.hold()
   
+  north = 40.915
+  east = -73.651
+  south = 40.496
+  west = -74.256
+  
+  width = east - west
+  height = north - south
+  x_range = [west - 0.05 * width, east + 0.05 * width]
+  y_range = [south - 0.05 * height, north + 0.05 * height] 
   TOOLS="pan,wheel_zoom,box_zoom,reset,previewsave"
   fig = bk.figure(title="311 Complaints by Zip Code", \
-         tools=TOOLS, background_fill = "#f8f8f8")
-  #print "aaaaaaaaaaaaaaa" 
-  #print grids['log_counts']
+         tools=TOOLS, background_fill = "#f8f8f8", x_range = x_range, y_range = y_range)
   circleSizes = [item for sublist in grids['log_counts'] for item in sublist]
-  #circleSizes = [item for sublist in grids['counts'] for item in sublist]
-  #print circleSizes
-
-  #print "aaaaaaaaaaaaaaa" 
+  
   # Creates the polygons
   cellWidth = gridLines['vLines'][1]-gridLines['vLines'][0]
   cellHeight = gridLines['hLines'][1] - gridLines['hLines'][0]
   bk.patches(polygons['lng_list'], polygons['lat_list'], fill_color="#fee8c8", line_color="gray")
-  for i in range(len(centers['lat'])):
-    #print centers['lat'][i], centers['lon'][i]
-    bk.rect([centers['lon'][i]], [centers['lat'][i]], fill_color = None, width = cellWidth, height = cellHeight, line_color = '#d5d5d5') 
-    bk.circle([centers['lon'][i]], [centers['lat'][i]], fill_color = 'red', size = .009 * (circleSizes[i])**3.7, line_color = None, alpha = 0.4)
+  circleSizes = [0.009 * (size ** 3.7) for size in circleSizes]
+  bk.scatter(centers['lon'], centers['lat'], size = circleSizes, alpha = 0.4, line_color = None, fill_color = 'red')
+  bk.hold()
+  #print type(centers['lon']) 
+  circleSizeArr = np.array(circleSizes)
+  maxSize = np.max(circleSizeArr)
+  circleSizeArr[circleSizeArr == 0] = 100
+  minSize = np.min(circleSizeArr)
+  #print minSize, maxSize
+  
+  legendN = 5
+  legendCircles = list(np.linspace(minSize, maxSize, legendN))
+  legendCounts = [str(int(math.exp(((size/0.009) ** (1.0/3.7))))) + " complaints" for size in legendCircles]
+  #print legendCircles  
+  fakeScatter = [0 for x in range(legendN)]
+  fakeScatterX = [-74.23 for x in range(legendN)]
+  fakeScatterXtext = [-74.23 + 0.05 for x in range(legendN)]
+  #fakeScatterY = [40.8 + 0.028*y for y in range(legendN)]
+  fakeScatterY = [40.8, 40.8 + 0.02, 40.8 + 0.036, 40.8 + 0.056,40.8 + 0.083]
+  #print fakeScatterX, type(fakeScatterX)
+  #print fakeScatterY, type(fakeScatterY)
+  bk.scatter(fakeScatterX, fakeScatterY, size = legendCircles, fill_color = 'red', line_color = None, alpha = 0.4)
+  bk.text(fakeScatterXtext[1:], fakeScatterY[1:], text = legendCounts[1:], angle = 0, text_align = "left", text_font_size = "7pt", text_baseline = 'middle')
+  #for i in range(len(fakeScatter)):
+  #  bk.scatter([fakeScatter[i]], [fakeScatter[i]], size = [legendCircles[i]], legend = int(legendCircles[i]), color = 'red', fill_line = None, alpha = 0.4)
+  # Disable background grid
   bk.grid().grid_line_color = None
   #print centers 
   ### Legend
@@ -183,17 +211,18 @@ def drawPlot(shapeFilename, zipBorough, grids, centers, gridLines):
   bk.show()
 
 if __name__ == '__main__':
-  if len(sys.argv) != 4:
+  if len(sys.argv) != 5:
     print 'Usage:'
-    print sys.argv[0] + ' <complaints> <zipboroughfilename> <shapefile>' 
+    print sys.argv[0] + 'n <complaints> <zipboroughfilename> <shapefile>' 
   else:
-    complaintFile = sys.argv[1]
-    zipBoroughFile = sys.argv[2]
-    shapeFile = sys.argv[3]
+    n = int(sys.argv[1])
+    complaintFile = sys.argv[2]
+    zipBoroughFile = sys.argv[3]
+    shapeFile = sys.argv[4]
+    
     
     zipBorough = getZipBorough(zipBoroughFile)
     ### Work with CSV
-    #zipAgencyCount = getZipAgencyCount(sys.argv[1], zipBorough)
     #zipColors, legendColors = problem2color(zipAgencyCount, sys.argv[4], sys.argv[5])
     #print "colors: ", zipColors
     #zipMaxAgency = {}
@@ -201,7 +230,7 @@ if __name__ == '__main__':
     #  maxAgency = max(zipAgencyCount[zipCode], key = zipAgencyCount[zipCode].get)
     #  maxComplaints = zipAgencyCount[zipCode][maxAgency]
     #  zipMaxAgency[zipCode] = (maxAgency, maxComplaints) 
-    grids, centers, gridLines = gridCounts(complaintFile, 16) 
+    grids, centers, gridLines = gridCounts(complaintFile, n) 
 
     ### Draw plot 
     drawPlot(shapeFile, zipBorough, grids, centers, gridLines)
