@@ -56,11 +56,8 @@ def gridCounts(complaint_file, n):
   
   width = east - west
   height = north - south
-  print width, height
 
   grid = [[1 for cell in range(n)] for cell in range(n)] # 1 for log transform
-  print grid
-  
   
   with open(complaint_file, 'r') as f:
     reader = csv.reader(f)
@@ -77,105 +74,46 @@ def gridCounts(complaint_file, n):
         col = int((lon - west)/( (east-west)/n ))
         row = int((lat - south)/( (north - south)/n ))
         grid[row][col] += 1
-  for row in grid:
-    print row
+  #for row in grid:
+  #  print row
   log_grid = [[math.log(count) for count in col] for col in grid]
-  for row in log_grid:
-    print row 
+  #for row in log_grid:
+  #  print row 
   
+  ### Gridlines
+  vLines = [west + width/n * i for i in range(n+1)]
+  hLines = [south + height/n * i for i in range(n+1)]
   ### Find centers of grid cells
-  centersHorizontal = [east + width * (i+0.5) for i in range(n)]
-  centersVertical = [south + height * (i + 0.5) for i in range(n)]
-  print "centers H"    
-  print centersHorizontal
-  print "centers V"
-  print centersVertical
+  centersHorizontal = [west + width/n * (i+0.5) for i in range(n)]
+  centersVertical = [south + height/n * (i + 0.5) for i in range(n)]
   centers_lon = centersHorizontal * n
   centers_lat = [x for x in centersVertical for i in range(n)]
-  print centers_lon
-  print centers_lat
+  return {'counts': grid, 'log_counts': log_grid}, {'lon': centers_lon, 'lat': centers_lat}, {'vLines': vLines, 'hLines': hLines}
 
-  return {'counts': grid, 'log_counts': log_grid}, {'lon': centers_lon, 'lat': centers_lat}
-
-def problem2color(zipAgencyCount, agency1, agency2):
-  zipColor = {}
-  minColor = 1
-  maxColor = 0
-  for zipCode in zipAgencyCount:
-    agency1count = 0
-    agency2count = 0
-    if agency1 in zipAgencyCount[zipCode]:
-      agency1count = zipAgencyCount[zipCode][agency1]
-    if agency2 in zipAgencyCount[zipCode]:
-      agency2count = zipAgencyCount[zipCode][agency2]
-    
-    if (agency1count + agency2count) == 0:
-      colorCode = -1
-    else:
-      colorCode = float(agency1count)/(agency1count + agency2count)
-    zipColor[zipCode] = colorCode
-    if colorCode > maxColor:
-      maxColor = colorCode
-    if colorCode >= 0 and colorCode < minColor:
-      minColor = colorCode
-  #print "COLORS for polygons:"  
-  for zipCode in zipColor:
-    red = hex(int(zipColor[zipCode] * 255))[2:5]
-    blue = hex(int((1 - zipColor[zipCode]) * 255))[2:5]
-    color = "#"+red+"00"+blue
-    #print color
-    zipColor[zipCode] = color
-
-  ### Legend colors
-  #print "COLORS for legend:"
-  legendColors = []
-  colorRange = [x*(1.0/40) for x in range(41)]
-  #print colorRange
-  for color in colorRange:
-    red = hex(int(color * 255))[2:5]
-    red = red.zfill(2)
-    #print "red: ", red
-    blue = hex(int((1-color)*255))[2:5]
-    blue = blue.zfill(2)
-    #print "blue: ", blue, hex(int((1-color)*255))
-    color = "#"+red+"00"+blue
-    legendColors.append(color)
-    #print color
-  return zipColor, legendColors
-
-def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors, legendColors, agency1, agency2):
+def drawPlot(shapeFilename, zipBorough, grids, centers, gridLines):
   # Read the ShapeFile
   dat = shapefile.Reader(shapeFilename)
   
   # Creates a dictionary for zip: {lat_list: [], lng_list: []}.
   zipCodes = []
-  hoverZip = []
-  hoverAgency = []
-  hoverComplaints = []
   polygons = {'lat_list': [], 'lng_list': [], 'centerLat_list': [], 'centerLon_list': []}
   
-
   record_index = 0
   for r in dat.iterRecords():
     currentZip = r[0]
 
     # Keeps only zip codes in NY area.
-    if currentZip in zipMaxAgency: # was in zipBorough:
-      # zipCodes.append(currentZip) # moving this line into the parts loop
+    if currentZip in zipBorough: # was in zipBorough:
 
       # Gets shape for this zip.
       shape = dat.shapeRecord(record_index).shape
       for part in range(len(shape.parts)):
         zipCodes.append(currentZip)
-        hoverZip.append(currentZip)
-        hoverAgency.append(zipMaxAgency[currentZip][0])
-        hoverComplaints.append(zipMaxAgency[currentZip][1])
         start = shape.parts[part]
         if part == len(shape.parts) - 1:
           end = len(shape.points)
         else:
           end   = shape.parts[part + 1]
-          
         points = shape.points[start : end]
         
         # Breaks into lists for lat/lng.
@@ -196,33 +134,6 @@ def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors, legendColors, a
 
     record_index += 1
 
-  # Palette
-  ##d9d9d9
-  brewer11 = ['#8dd3c7', '#ffffb3', '#bebada','#fb8072','#80b1d3','#fdb462','#b3de69','#fccde5','#d9d9d9','#bc80bd','#ccebc5']
-  #brewer11 = ['#a6cee3', '#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99']
-
-  #agencies = sorted(list({zipMaxAgency[zipCode] for zipCode in zipMaxAgency}))
-  
-  biggestComplaints = {}
-  for zz, aa in zipMaxAgency.iteritems():
-    if aa[0] in biggestComplaints:
-      biggestComplaints[aa[0]] += 1
-    else:
-      biggestComplaints[aa[0]] = 1
-  
-  # sorting agencies by number of zip codes (to try to get better colors)
-  agencies = list(biggestComplaints.iteritems())
-  agencies = sorted(agencies, key = lambda x: x[1], reverse = True)
-  agencies = [agency[0] for agency in agencies]
-  
-  # Assign colors to agencies 
-  polygons['colors'] = [zipColors[zipCode] for zipCode in zipCodes]
-  
-  
-
-  # Prepare hover
-  #source = bk.ColumnDataSource(data=dict(hoverAgency=hoverAgency, hoverZip=hoverZip, hoverComplaintCount=hoverComplaintCount,))
-  source = bk.ColumnDataSource(data=dict(hoverZip = hoverZip, hoverAgency = hoverAgency, hoverComplaints = hoverComplaints),)
   # Creates the Plot
   bk.output_file("problem3.html")
   bk.hold()
@@ -230,66 +141,68 @@ def drawPlot(shapeFilename, zipBorough, zipMaxAgency, zipColors, legendColors, a
   TOOLS="pan,wheel_zoom,box_zoom,reset,previewsave"
   fig = bk.figure(title="311 Complaints by Zip Code", \
          tools=TOOLS, background_fill = "#f8f8f8")
-         
-  
-  # Creates the polygons.
-  bk.patches(polygons['lng_list'], polygons['lat_list'], fill_color=polygons['colors'], line_color="gray") 
-  
-  ### Zip codes as text on polygons 
-  #for i in range(len(polygons['centerLat_list'])):
-  #  y = polygons['centerLat_list'][i]
-  #  x = polygons['centerLon_list'][i]
-  #  zipCode = zipCodes[i]
-  #  bk.text([x], [y], text=zipCode, angle=0, text_font_size="8pt", text_align="center", text_baseline="middle")
- 
-  fonts = ["Comic sans MS", "Papyrus", "Curlz", "Impact", "Zapf dingbats", "Comic sans MS", "Papyrus", "Curlz", "Impact", "Zapf Dingbats", "Comic sans MS"]
-   
+  #print "aaaaaaaaaaaaaaa" 
+  #print grids['log_counts']
+  circleSizes = [item for sublist in grids['log_counts'] for item in sublist]
+  #circleSizes = [item for sublist in grids['counts'] for item in sublist]
+  #print circleSizes
+
+  #print "aaaaaaaaaaaaaaa" 
+  # Creates the polygons
+  cellWidth = gridLines['vLines'][1]-gridLines['vLines'][0]
+  cellHeight = gridLines['hLines'][1] - gridLines['hLines'][0]
+  bk.patches(polygons['lng_list'], polygons['lat_list'], fill_color="#fee8c8", line_color="gray")
+  for i in range(len(centers['lat'])):
+    #print centers['lat'][i], centers['lon'][i]
+    bk.rect([centers['lon'][i]], [centers['lat'][i]], fill_color = None, width = cellWidth, height = cellHeight, line_color = '#d5d5d5') 
+    bk.circle([centers['lon'][i]], [centers['lat'][i]], fill_color = 'red', size = .009 * (circleSizes[i])**3.7, line_color = None, alpha = 0.4)
+  bk.grid().grid_line_color = None
+  #print centers 
   ### Legend
-
-  x = -74.25
-  y = 40.8
-
-
-  height = 0.003
-  legend_box_y = y + 0.5 * height * len(legendColors) 
-  bk.rect([x+0.032], [legend_box_y], width = 0.12, height = height*len(legendColors)*1.15, color = "#ffffff", line_color = "gray")
   #x = -74.25
-  #y = 40.9
-  for color in legendColors: 
-  #  #print "Color: ", a
-  #  #print "x:", x
-  #  #print "y:", y
-  # 
-    bk.rect([x], [y], color = color, width=0.03, height=height)
-    #bk.text([x], [y], text = agency, angle=0, text_font_size="7pt", text_align="center", text_baseline="middle")
-    y = y + height 
-  legend_bottom_y = 40.797
-  legend_top_y = legend_bottom_y + 0.92 * height * len(legendColors)
-  bk.text([-74.225], [legend_bottom_y], text = agency2, angle = 0, text_font_size = "7pt", text_align = "left")
-  bk.text([-74.225], [legend_top_y], text = agency1, angle = 0, text_font_size = "7pt", text_align = "left")
+  #y = 40.8
+  #height = 0.003
+  #legend_box_y = y + 0.5 * height * len(legendColors) 
+  #bk.rect([x+0.032], [legend_box_y], width = 0.12, height = height*len(legendColors)*1.15, color = "#ffffff", line_color = "gray")
+  ##x = -74.25
+  ##y = 40.9
+  #for color in legendColors: 
+  ##  #print "Color: ", a
+  ##  #print "x:", x
+  ##  #print "y:", y
+  ## 
+  #  bk.rect([x], [y], color = color, width=0.03, height=height)
+  #  #bk.text([x], [y], text = agency, angle=0, text_font_size="7pt", text_align="center", text_baseline="middle")
+  #  y = y + height 
+  #legend_bottom_y = 40.797
+  #legend_top_y = legend_bottom_y + 0.92 * height * len(legendColors)
+  #bk.text([-74.225], [legend_bottom_y], text = agency2, angle = 0, text_font_size = "7pt", text_align = "left")
+  #bk.text([-74.225], [legend_top_y], text = agency1, angle = 0, text_font_size = "7pt", text_align = "left")
   #bokeh.embed.components(fig, bokeh.resources.CDN)
+  
   bk.show()
 
 if __name__ == '__main__':
-  if len(sys.argv) != 6:
+  if len(sys.argv) != 4:
     print 'Usage:'
-    print sys.argv[0] + ' <complaints> <zipboroughfilename> <shapefile> <agency1> <agency2>'
-    print '\ne.g.: ' + sys.argv[0] + ' data/nyshape.shp zip_borough.csv'
+    print sys.argv[0] + ' <complaints> <zipboroughfilename> <shapefile>' 
   else:
-    zipBorough = getZipBorough(sys.argv[2])
-    agency1 = sys.argv[4]
-    agency2 = sys.argv[5]
+    complaintFile = sys.argv[1]
+    zipBoroughFile = sys.argv[2]
+    shapeFile = sys.argv[3]
     
+    zipBorough = getZipBorough(zipBoroughFile)
     ### Work with CSV
-    zipAgencyCount = getZipAgencyCount(sys.argv[1], zipBorough)
-    zipColors, legendColors = problem2color(zipAgencyCount, sys.argv[4], sys.argv[5])
+    #zipAgencyCount = getZipAgencyCount(sys.argv[1], zipBorough)
+    #zipColors, legendColors = problem2color(zipAgencyCount, sys.argv[4], sys.argv[5])
     #print "colors: ", zipColors
-    zipMaxAgency = {}
-    for zipCode in zipAgencyCount:
-      maxAgency = max(zipAgencyCount[zipCode], key = zipAgencyCount[zipCode].get)
-      maxComplaints = zipAgencyCount[zipCode][maxAgency]
-      zipMaxAgency[zipCode] = (maxAgency, maxComplaints) 
-    #zipMaxAgency = {zipCode: max(zipAgencyCount[zipCode], key = zipAgencyCount[zipCode].get) for zipCode in zipAgencyCount}
-    #print zipMaxAgency
+    #zipMaxAgency = {}
+    #for zipCode in zipAgencyCount:
+    #  maxAgency = max(zipAgencyCount[zipCode], key = zipAgencyCount[zipCode].get)
+    #  maxComplaints = zipAgencyCount[zipCode][maxAgency]
+    #  zipMaxAgency[zipCode] = (maxAgency, maxComplaints) 
+    grids, centers, gridLines = gridCounts(complaintFile, 16) 
+
     ### Draw plot 
-    #drawPlot(sys.argv[3], zipBorough, zipMaxAgency, zipColors, legendColors, agency1, agency2)
+    drawPlot(shapeFile, zipBorough, grids, centers, gridLines)
+
