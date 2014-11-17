@@ -125,7 +125,7 @@ def drawPlot(shapeFilename, zipBorough, zipMaxAgency):
   #source = bk.ColumnDataSource(data=dict(hoverAgency=hoverAgency, hoverZip=hoverZip, hoverComplaintCount=hoverComplaintCount,))
   source = bk.ColumnDataSource(data=dict(hoverZip = hoverZip, hoverAgency = hoverAgency, hoverComplaints = hoverComplaints),)
   # Creates the Plot
-  bk.output_file("zipCodes.html")
+  bk.output_file("problem1.html")
   bk.hold()
   
   TOOLS="pan,wheel_zoom,box_zoom,reset,previewsave,hover"
