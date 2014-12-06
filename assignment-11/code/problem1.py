@@ -2,7 +2,7 @@ import sys
 import time
 import csv
 
-import scipy as sp
+import scipy.spatial as sps
 
 def loadRoadNetworkIntersections(filename):
     #bbox around Manhattan
@@ -91,7 +91,14 @@ def kdtreeApproach(intersections, tripLocations):
 
     #TODO: insert your code here. You should build the kdtree and use it to query the closest
     #      intersection for each trip
-
+    tree = sps.KDTree(intersections)
+    for tripPickup in tripLocations:
+        intIndex = tree.query(tripPickup)[1]
+        if intersections[intIndex] in counts:
+            counts[tuple(intersections[intIndex])] += 1
+        else:
+            counts[tuple(intersections[intIndex])] = 0
+            
 
     #
     endTime = time.time()
