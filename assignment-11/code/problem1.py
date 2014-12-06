@@ -94,10 +94,11 @@ def kdtreeApproach(intersections, tripLocations):
     tree = sps.KDTree(intersections)
     for tripPickup in tripLocations:
         intIndex = tree.query(tripPickup)[1]
-        if intersections[intIndex] in counts:
-            counts[tuple(intersections[intIndex])] += 1
+        intersection = tuple(intersections[intIndex])
+        if intersection in counts:
+            counts[intersection] += 1
         else:
-            counts[tuple(intersections[intIndex])] = 0
+            counts[intersection] = 0
             
 
     #
@@ -119,6 +120,18 @@ if __name__ == '__main__':
 
     #You need to implement this one. You need to make sure that the counts are correct
     kdtreeCounts = kdtreeApproach(roadIntersections,tripPickups)
+
+    nC = sorted(list(naiveCounts.iteritems()))
+    kdC = sorted(list(kdtreeCounts.iteritems()))
+
+    print "len(nC): ", len(nC)
+    print "len(kdC): ", len(kdC)
+
+    for i in range(100):
+        #if nC[i] != kdC[i]:
+        print nC[i]
+        print kdC[i] 
+
 
     #
     plotResults(roadIntersections,kdtreeCounts)
