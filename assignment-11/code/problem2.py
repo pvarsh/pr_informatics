@@ -89,12 +89,12 @@ def kdtreeApproach(intersections, tripLocations, distanceThreshold):
 
     #TODO: insert your code here. You should build the kdtree and use it to query the closest
     #      intersection for each trip
-
+    counter = 0
     tree = sps.KDTree(intersections)
     for tripPickup in tripLocations:
-        points = tree.query(tripPickup, k = 10e9, distance_upper_bound = distanceThreshold)
+        points = tree.query_ball_point(tripPickup, r = distanceThreshold) 
         for i in range(len(points)):
-            intersection = tuple(intersections[i])
+            intersection = tuple(intersections[points[i]])
             if intersection in counts:
                 counts[intersection] += 1
             else:
