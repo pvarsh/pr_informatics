@@ -3,6 +3,7 @@ import time
 import csv
 
 import scipy.spatial as sps
+import matplotlib.pyplot as plt
 
 def loadRoadNetworkIntersections(filename):
     #bbox around Manhattan
@@ -108,7 +109,23 @@ def kdtreeApproach(intersections, tripLocations):
 
 def plotResults(intersections, counts):
     #TODO: intersect the code to plot here
-    print 'TODO'
+    
+    lats, longs = [list(column) for column in zip(*intersections)]
+    
+    sizes = []
+ 
+    for intersect in intersections:
+        try:
+            sizes.append(counts[tuple(intersect)])
+        except KeyError:
+            sizes.append(0)
+    
+    sizes = [size*3 for size in sizes]
+    
+    fig, ax = plt.subplots()
+    ax.scatter(longs, lats, marker = '.', lw = 0, color = "dodgerblue", alpha = 0.6, s= sizes) 
+    plt.show()    
+
 
 if __name__ == '__main__':
     #these functions are provided and they already load the data for you
@@ -117,12 +134,12 @@ if __name__ == '__main__':
 
     #You need to implement this one. You need to make sure that the counts are correct
     naiveCounts = naiveApproach(roadIntersections,tripPickups)
-
+    
     #You need to implement this one. You need to make sure that the counts are correct
     kdtreeCounts = kdtreeApproach(roadIntersections,tripPickups)
 
-    nC = sorted(list(naiveCounts.iteritems()))
-    kdC = sorted(list(kdtreeCounts.iteritems()))
+    #nC = sorted(list(naiveCounts.iteritems()))
+    #kdC = sorted(list(kdtreeCounts.iteritems()))
 
     #
     plotResults(roadIntersections,kdtreeCounts)
