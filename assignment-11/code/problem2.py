@@ -121,7 +121,7 @@ if __name__ == '__main__':
     distanceThreshold = float(sys.argv[3])
 
     #You need to implement this one. You need to make sure that the counts are correct
-    #naiveCounts = naiveApproach(roadIntersections,tripPickups, distanceThreshold)
+    naiveCounts = naiveApproach(roadIntersections,tripPickups, distanceThreshold)
 
     #You need to implement this one. You need to make sure that the counts are correct
     kdtreeCounts = kdtreeApproach(roadIntersections,tripPickups, distanceThreshold)
