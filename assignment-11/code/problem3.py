@@ -35,11 +35,17 @@ def naiveApproach(tripLocations, startRectangle, endRectangle):
     #TODO: insert your code here. You should implement the naive approach, i.e., loop 
     #      through all the trips and find the closest intersection by looping through
     #      all of them
-
-
+    
+    for i, trip in enumerate(tripLocations):
+        if trip[0] > startRectangle[0][0] and trip[0] < startRectangle[0][1]:
+            if trip[1] > startRectangle[1][0] and trip[1] < startRectangle[1][1]:
+                if trip[2] > endRectangle[0][0] and trip[2] < endRectangle[0][1]:
+                    if trip[3] > endRectangle[1][0] and trip[3] < endRectangle[1][1]:
+                        indices.append(i)
     #
     endTime = time.time()
     print 'The naive computation took', (endTime - startTime), 'seconds'
+    print indices
     return indices
 
 def kdtreeApproach(tripLocations, startRectangle, endRectangle):
