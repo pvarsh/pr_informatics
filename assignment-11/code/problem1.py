@@ -75,7 +75,7 @@ def naiveApproach(intersections, tripLocations):
         if currentIntersection in counts:
             counts[currentIntersection] += 1
         else:
-            counts[currentIntersection] = 0
+            counts[currentIntersection] = 1
             
     #
     endTime = time.time()
@@ -98,7 +98,7 @@ def kdtreeApproach(intersections, tripLocations):
         if intersection in counts:
             counts[intersection] += 1
         else:
-            counts[intersection] = 0
+            counts[intersection] = 1
             
 
     #
@@ -123,15 +123,6 @@ if __name__ == '__main__':
 
     nC = sorted(list(naiveCounts.iteritems()))
     kdC = sorted(list(kdtreeCounts.iteritems()))
-
-    print "len(nC): ", len(nC)
-    print "len(kdC): ", len(kdC)
-
-    for i in range(100):
-        #if nC[i] != kdC[i]:
-        print nC[i]
-        print kdC[i] 
-
 
     #
     plotResults(roadIntersections,kdtreeCounts)
