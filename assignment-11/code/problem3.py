@@ -1,6 +1,10 @@
 import sys
 import time
 import csv
+import math
+import numpy as np
+import scipy.spatial as sps
+
 
 def loadTaxiTripsPickupAndDropoffs(filename):
     #bbox around Manhattan
@@ -25,7 +29,14 @@ def loadTaxiTripsPickupAndDropoffs(filename):
         except:
             print l
     return result
-    
+   
+def pointInRectangle(point, rectangle):
+    if point[0] > rectangle[0][0] and point[0] < rectangle[0][1]:
+        if point[1] > rectangle[1][0] and point[1] < rectangle[1][1]:
+            return True
+    else:
+        return False
+ 
 def naiveApproach(tripLocations, startRectangle, endRectangle):
     #indices is a list that should contain the indices of the trips in the tripLocations list
     #which start in the startRectangle region and end in the endRectangle region
@@ -48,6 +59,22 @@ def naiveApproach(tripLocations, startRectangle, endRectangle):
     print indices
     return indices
 
+def euclidDistance(point1, point2):
+    return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
+
+def circumscribeRectangle(rectangle):
+    """
+    Finds center of rectangle given described by lower left and upper right points
+    [[x0, x1], [y0, y1]]
+    """
+    xCenter = sum(rectangle[0])/2
+    yCenter = sum(rectangle[1])/2
+    
+    radius = euclidDistance([rectangle[0][0], rectangle[1][0]], [xCenter, yCenter])
+
+    return {'center': (xCenter, yCenter), 'r':radius}
+
+
 def kdtreeApproach(tripLocations, startRectangle, endRectangle):
     #indices is a list that should contain the indices of the trips in the tripLocations list
     #which start in the startRectangle region and end in the endRectangle region
@@ -56,7 +83,36 @@ def kdtreeApproach(tripLocations, startRectangle, endRectangle):
 
     #TODO: insert your code here. You should build the kdtree and use it to query the closest
     #      intersection for each trip
+    
+    startCircle = circumscribeRectangle(startRectangle)
+    #endCircle = circumscribeRectangle(endRectangle)
 
+    tripLocations = np.array(tripLocations)  
+    tripStarts = tripLocations[0: , 0:2]
+    tripEnds = tripLocations[0: , 2: ]
+   
+    # possible to improve by querying the starts tree before building the ends tree to only
+    # build the ends tree on the subset returned by first query
+ 
+    treeStarts = sps.KDTree(tripStarts)
+    #treeEnds = sps.KDTree(tripEnds)
+    
+    startsSubset = treeStarts.query_ball_point(startCircle['center'], r = startCircle['r'])
+    #endsSubset = treeEnds.query_ball_point(endCircle['center'], r = endCircle['r'])
+
+    #print "startsSubset: ", startsSubset
+    #print "endsSubset: ", endsSubset
+    
+    #print "\n"
+    #print "len(startSubset): ", len(startsSubset)
+    #print "len(endsSubset): ", len(endsSubset)
+    #print "len(tripLocations): ", len(tripLocations)
+    
+    for ind in startsSubset:
+        if pointInRectangle(tripStarts[ind], startRectangle):
+            if pointInRectangle(tripEnds[ind], endRectangle):
+                indices.append(ind)
+    #print "indices: ", indices 
     #
     endTime = time.time()
     print 'The kdtree computation took', (endTime - startTime), 'seconds'
