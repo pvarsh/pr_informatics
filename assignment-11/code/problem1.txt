@@ -1,0 +1,1 @@
+Naive implementation takes around 40s, while k-d tree implementation takes under 2.15 seconds on my machine. The balanced binary structure of k-d tree offers a large performance advantage for repeated lookups in this problem.
