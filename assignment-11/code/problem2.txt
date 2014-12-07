@@ -1,0 +1,1 @@
+Naive implementation takes around 50-65s, while k-d tree implementation takes under 15 seconds on my machine. The balanced binary structure of k-d tree offers a large performance advantage for repeated lookups in this problem. An improvement to the visualization would be weighing point sizes according to the given distance threshold and providing the size legend.
