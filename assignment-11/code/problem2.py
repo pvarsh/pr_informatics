@@ -3,7 +3,7 @@ import time
 import csv
 
 import scipy.spatial as sps
-
+import matplotlib.pyplot as plt
 def loadRoadNetworkIntersections(filename):
     #bbox around Manhattan
     latBounds = [40.6,40.9]
@@ -108,11 +108,25 @@ def kdtreeApproach(intersections, tripLocations, distanceThreshold):
 
 def plotResults(intersections, counts):
     #TODO: intersect the code to plot here
-    print 'TODO'
+    lats, longs = [list(column) for column in zip(*intersections)]
+    
+    sizes = []
+    
+    for intersect in intersections:
+        try:
+            sizes.append(counts[tuple(intersect)])
+        except KeyError:
+            sizes.append(0)
+    
+    sizes = [size*2 for size in sizes]
+    
+    fig, ax = plt.subplots()
+    ax.scatter(longs, lats, marker = '.', lw = 0, color = "dodgerblue", alpha = 0.6, s= sizes)
+    plt.show()    
 
 def extraCredit(intersections, counts):
     #TODO: intersect the code to plot here
-    print 'TODO'
+    print 'DONE'
 
 if __name__ == '__main__':
     #these functions are provided and they already load the data for you
