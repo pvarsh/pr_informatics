@@ -56,7 +56,6 @@ def naiveApproach(tripLocations, startRectangle, endRectangle):
     #
     endTime = time.time()
     print 'The naive computation took', (endTime - startTime), 'seconds'
-    print indices
     return indices
 
 def euclidDistance(point1, point2):
@@ -105,7 +104,6 @@ def kdtreeApproach(tripLocations, startRectangle, endRectangle):
     #
     endTime = time.time()
     print 'The kdtree computation took', (endTime - startTime), 'seconds'
-    print indices
     return indices
 
 def extraCredit(tripLocations, startPolygon, endPolygon):

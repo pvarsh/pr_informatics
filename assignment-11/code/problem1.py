@@ -84,8 +84,6 @@ def naiveApproach(intersections, tripLocations):
     endTime = time.time()
     print 'The naive computation took', (endTime - startTime), 'seconds'
 
-    print list(counts.iteritems())[0:10]
-    print max([y for x,y in list(counts.iteritems())])
 
     return counts
 
@@ -112,9 +110,6 @@ def kdtreeApproach(intersections, tripLocations):
     endTime = time.time()
     print 'The kdtree computation took', (endTime - startTime), 'seconds'
     
-    
-    print list(counts.iteritems())[0:10]
-    print max([y for x,y in list(counts.iteritems())])
     return counts
 
 def plotResults(intersections, counts):
