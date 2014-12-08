@@ -61,26 +61,32 @@ def naiveApproach(intersections, tripLocations):
     counts = {}
     startTime = time.time()
 
+    
+
     #TODO: insert your code here. You should implement the naive approach, i.e., loop 
     #      through all the trips and find the closest intersection by looping through
     #      all of them
 
-    for tripPickup in tripLocations:
+    for tInd, tripPickup in enumerate(tripLocations):
         currentDistance = 10e6
-        for intersection in intersections:
+        for iInd, intersection in enumerate(intersections):
             newDistance = distSquare(intersection, tripPickup)
             if newDistance <= currentDistance:
-                currentIntersection = intersection
+                currentIntInd = iInd 
                 currentDistance = newDistance
-        currentIntersection = tuple(currentIntersection)
-        if currentIntersection in counts:
-            counts[currentIntersection] += 1
+        #currentIntersection = tuple(currentIntersection)
+        if currentIntInd in counts:
+            counts[currentIntInd] += 1
         else:
-            counts[currentIntersection] = 1
+            counts[currentIntInd] = 1
             
     #
     endTime = time.time()
     print 'The naive computation took', (endTime - startTime), 'seconds'
+
+    print list(counts.iteritems())[0:10]
+    print max([y for x,y in list(counts.iteritems())])
+
     return counts
 
 def kdtreeApproach(intersections, tripLocations):
@@ -95,28 +101,32 @@ def kdtreeApproach(intersections, tripLocations):
     tree = sps.KDTree(intersections)
     for tripPickup in tripLocations:
         intIndex = tree.query(tripPickup)[1]
-        intersection = tuple(intersections[intIndex])
-        if intersection in counts:
-            counts[intersection] += 1
+        #intersection = tuple(intersections[intIndex])
+        if intIndex in counts:
+            counts[intIndex] += 1
         else:
-            counts[intersection] = 1
+            counts[intIndex] = 1
             
 
     #
     endTime = time.time()
     print 'The kdtree computation took', (endTime - startTime), 'seconds'
+    
+    
+    print list(counts.iteritems())[0:10]
+    print max([y for x,y in list(counts.iteritems())])
     return counts
 
 def plotResults(intersections, counts):
     #TODO: intersect the code to plot here
     
-    lats, longs = [list(column) for column in zip(*intersections)]
-    
+    #lats, longs = [list(column) for column in zip(*intersections)]
+    lats, longs = zip(*intersections)
     sizes = []
  
-    for intersect in intersections:
+    for intInd, intersect in enumerate(intersections):
         try:
-            sizes.append(counts[tuple(intersect)])
+            sizes.append(counts[intInd])
         except KeyError:
             sizes.append(0)
     
