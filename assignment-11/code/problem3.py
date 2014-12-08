@@ -95,27 +95,17 @@ def kdtreeApproach(tripLocations, startRectangle, endRectangle):
     # build the ends tree on the subset returned by first query
  
     treeStarts = sps.KDTree(tripStarts)
-    #treeEnds = sps.KDTree(tripEnds)
     
     startsSubset = treeStarts.query_ball_point(startCircle['center'], r = startCircle['r'])
-    #endsSubset = treeEnds.query_ball_point(endCircle['center'], r = endCircle['r'])
 
-    #print "startsSubset: ", startsSubset
-    #print "endsSubset: ", endsSubset
-    
-    #print "\n"
-    #print "len(startSubset): ", len(startsSubset)
-    #print "len(endsSubset): ", len(endsSubset)
-    #print "len(tripLocations): ", len(tripLocations)
-    
     for ind in startsSubset:
         if pointInRectangle(tripStarts[ind], startRectangle):
             if pointInRectangle(tripEnds[ind], endRectangle):
                 indices.append(ind)
-    #print "indices: ", indices 
     #
     endTime = time.time()
     print 'The kdtree computation took', (endTime - startTime), 'seconds'
+    print indices
     return indices
 
 def extraCredit(tripLocations, startPolygon, endPolygon):

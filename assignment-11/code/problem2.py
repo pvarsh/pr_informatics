@@ -65,14 +65,14 @@ def naiveApproach(intersections, tripLocations, distanceThreshold):
     #      all of them
 
     for tripPickup in tripLocations:
-        tripPickup = tuple(tripPickup)
-        for intersection in intersections:
+        #tripPickup = tuple(tripPickup)
+        for intInd, intersection in enumerate(intersections):
             newDistance = distSquare(intersection, tripPickup)
             if newDistance <= distanceThreshold:
-                if tripPickup in counts:
-                    counts[tripPickup] += 1
+                if intInd in counts:
+                    counts[intInd] += 1
                 else:
-                    counts[tripPickup] = 1
+                    counts[intInd] = 1
 
     #
     endTime = time.time()
@@ -92,13 +92,19 @@ def kdtreeApproach(intersections, tripLocations, distanceThreshold):
     counter = 0
     tree = sps.KDTree(intersections)
     for tripPickup in tripLocations:
-        points = tree.query_ball_point(tripPickup, r = distanceThreshold) 
-        for i in range(len(points)):
-            intersection = tuple(intersections[points[i]])
-            if intersection in counts:
-                counts[intersection] += 1
+        points = tree.query_ball_point(tripPickup, r = distanceThreshold)
+        for point in points:
+            if point in counts:
+                counts[point] += 1
             else:
-                counts[intersection] = 1
+                counts[point] = 1
+
+        #for i in range(len(points)):
+        #    intersection = tuple(intersections[points[i]])
+        #    if intersection in counts:
+        #        counts[intersection] += 1
+        #    else:
+        #        counts[intersection] = 1
     
 
     #
@@ -108,13 +114,13 @@ def kdtreeApproach(intersections, tripLocations, distanceThreshold):
 
 def plotResults(intersections, counts):
     #TODO: intersect the code to plot here
-    lats, longs = [list(column) for column in zip(*intersections)]
+    lats, longs = zip(*intersections)
     
     sizes = []
     
-    for intersect in intersections:
+    for intInd, intersect in enumerate(intersections):
         try:
-            sizes.append(counts[tuple(intersect)])
+            sizes.append(counts[intInd])
         except KeyError:
             sizes.append(0)
     
